@@ -1,0 +1,41 @@
+
+{
+	"name": "nodebb-plugin-import-ubb",
+	"version": "0.0.1",
+	"description": "a UBB forum exporter to import-ready files",
+	"main": "./lib/export.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/akhoury/nodebb-plugin-import-ubb"
+	},
+	"keywords": [
+		"ubb",
+		"nodebb",
+		"plugin",
+		"migrate",
+		"convert",
+		"export",
+		"import"
+	],
+	"author": {
+		"name": "akhoury",
+		"email": "bentael@gmail.com"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/akhoury/nodebb-plugin-import-ubb/issues"
+	},
+	"dependencies": {
+		"underscore": "~1.5.2",
+		"fs-extra": "~0.8.1",
+		"async": "~0.2.9",
+		"optimist": "~0.6.0",
+		"marked": "~0.1.6",
+		"mysql": "~2.0.x",
+		"tiny-logger": "~0.0.x",
+		"node-persist": "git://github.com/simonlast/node-persist.git"
+	}
+}
