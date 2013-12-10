@@ -6,7 +6,7 @@ a UBB forum exporter to import-ready files.
 a refactor of [nodebb-plugin-ubbmigrator](https://github.com/akhoury/nodebb-plugin-ubbmigrator)
 into this plugin to work along with [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import).
 
-## Still Under development. First Release ETA 2 days, stay tuned
+__works, but still young__
 
 ### What is this?
 
@@ -23,7 +23,12 @@ it doesn't really need to be, nor that you can use it within NodeBB it self, but
 ### Usage
 
 ```
-node export.ubb.js --storage="../storage" --config="../config.ubb.json" --log="debug"
+cd NodeBB
+npm install nodebb-plugin-import-ubb
+cd node_modules/nodebb-plugin-import-ubb
+npm install
+cd bin
+node export.js --storage="$HOME/Desktop/storage" --config="../export.config.json" --log="debug,info,warn" --flush
 ```
 
 ### What does it export?
@@ -64,10 +69,38 @@ read carefully:
     * `_content` YES (HTML - read the [Markdown Note](#markdown-note) below)
     * `_timestamp` YES, UBB uses Seconds, the exporter will convert to Milliseconds
 
-## Versions tested on:
+### I exported now what?
+
+now use this [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) to import your files into NodeBB's database
+
+### it's an exporter, why does it have 'import' in its title
+
+To keep the namespacing accurate, this __exporter__ is designed to export data for [nodebb-plugin-import] only and a 1 time use, why do you care.
+
+### Versions tested on:
   - UBB 7.5.7
 
 ### You configs are required
 
+But you can override the log, storageDir and clearStorage ones with flags when using [bin/export.js](bin/export.js)
+```
+{
+	"log": "debug",
+	"storageDir": "../storage",
+
+	"clearStorage": false,
+
+	"db": {
+		"host": "localhost",
+		"user": "ubb_user",
+		"password": "password",
+		"database": "ubb_test"
+	},
+	"tablePrefix": "ubbt_"
+
+}
+```
+
 ### Markdown note
 
+read [nodebb-plugin-import#markdown-note](https://github.com/akhoury/nodebb-plugin-import#markdown-note)

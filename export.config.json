@@ -1,0 +1,15 @@
+{
+	"log": "debug",
+	"storageDir": "../storage",
+
+	"clearStorage": false,
+
+	"db": {
+		"host": "localhost",
+		"user": "ubb_user",
+		"password": "password",
+		"database": "ubb_test"
+	},
+	"tablePrefix": "ubbt_"
+
+}

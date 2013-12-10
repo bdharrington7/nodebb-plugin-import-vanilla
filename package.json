@@ -1,7 +1,7 @@
 
 {
 	"name": "nodebb-plugin-import-ubb",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "a UBB forum exporter to import-ready files",
 	"main": "./lib/export.js",
 	"scripts": {
@@ -36,6 +36,6 @@
 		"marked": "~0.1.6",
 		"mysql": "~2.0.x",
 		"tiny-logger": "~0.0.x",
-		"node-persist": "git://github.com/simonlast/node-persist.git"
+		"node-persist": "git://github.com/akhoury/node-persist.git#master"
 	}
 }
