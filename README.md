@@ -39,10 +39,11 @@ read carefully:
     * `_alternativeUsername` YES. as the UBB.User.UserDisplayName, which [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) will try to use if the username validation fails
     * `_password` NO. UBB uses MD5, NodeBB uses base64 I think, so can't do, but if you use [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) it will generate random passwords and hand them to you so can email them.
     * `_level` (administrator and moderator) YES. Admins will stay Admins, and Moderators will stay Moderators, the catch here though is that each moderator is a moderator on ALL of the categories, since I didn't find anywhere UBB separating these powers. Hopefully soon you will be able to edit the Moderators easily via the NodeBB/admin.
-    * `_joindate` YES, UBB uses Seconds, the exporter will convert to Milliseconds
-    * `_website` YES. if URL looks valid, it is exporter, but it's not checked if 404s
-    * `_picture` YES. if URL looks valid, it is exporter, but it's not checked if 404s, if not valid, it's set to "" and NodeBB will generate a gravatar URl for the user
-    * `_reputation` SORT-OF. assumed as the UBB.User.raking (by default)
+    * `_joindate` YES, UBB uses Seconds, the exported will convert to Milliseconds
+    * `_website` YES. if URL looks valid, it is exported, but it's not checked if 404s
+    * `_picture` YES. if URL looks valid, it is exported, but it's not checked if 404s, if not valid, it's set to "" and NodeBB will generate a gravatar URl for the user
+    * `_reputation` SORT-OF. assumed as the __UBB.User.raking__
+    * `_profileviews` SORT-OF. assumed as the __UBB.User.totalRanks__ I didn't find anything closer
     * `_location` YES. migrated as is, clear text
     * `_signature` YES. migrated as is (HTML -- read the [Markdown note](#markdown-note) below)
     * `_banned` YES. it will stay banned, by username
