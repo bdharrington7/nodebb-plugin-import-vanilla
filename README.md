@@ -25,9 +25,7 @@ it doesn't really need to be, nor that you can use it within NodeBB it self, but
 ```
 cd NodeBB
 npm install nodebb-plugin-import-ubb
-cd node_modules/nodebb-plugin-import-ubb
-npm install
-cd bin
+cd node_modules/nodebb-plugin-import-ubb/bin
 node export.js --storage="$HOME/Desktop/storage" --config="../export.config.json" --log="debug,info,warn" --flush
 ```
 
