@@ -72,7 +72,7 @@ read carefully:
 
 now use this [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) to import your files into NodeBB's database
 
-### it's an exporter, why does it have 'import' in its title
+### It's an exporter, why does it have 'import' in its title
 
 To keep the namespacing accurate, this __exporter__ is designed to export data for [nodebb-plugin-import] only and a 1 time use, why do you care.
 
