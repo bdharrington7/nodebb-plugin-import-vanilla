@@ -72,10 +72,6 @@ read carefully:
 
 now use this [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) to import your files into NodeBB's database
 
-### It's an exporter, why does it have 'import' in its title
-
-To keep the namespacing accurate, this __exporter__ is designed to export data for [nodebb-plugin-import] only and a 1 time use, why do you care.
-
 ### Versions tested on:
   - UBB 7.5.7
 
@@ -103,3 +99,8 @@ But you can override the log, storageDir and clearStorage ones with flags when u
 ### Markdown note
 
 read [nodebb-plugin-import#markdown-note](https://github.com/akhoury/nodebb-plugin-import#markdown-note)
+
+### It's an exporter, why does it have 'import' in its title
+
+To keep the namespacing accurate, this __exporter__ is designed to export data for [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) only, also for a 1 time use, so why do you care.
+
