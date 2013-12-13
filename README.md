@@ -68,7 +68,7 @@ read carefully:
     * `_content` YES (HTML - read the [Markdown Note](#markdown-note) below)
     * `_timestamp` YES, UBB uses Seconds, the exporter will convert to Milliseconds
 
-### I exported now what?
+### I exported, now what?
 
 now use this [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) to import your files into NodeBB's database
 
