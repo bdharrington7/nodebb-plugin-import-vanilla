@@ -3,7 +3,7 @@
 	"name": "nodebb-plugin-import-ubb",
 	"description": "Export your UBB forum into a structured data files that nodebb-plugin-import can understand",
 	"url": "https://github.com/akhoury/nodebb-plugin-import-ubb",
-	"library": "./lib/index.js",
+	"library": "./admin/index.js",
 	"hooks": [
 		{ "hook": "filter:admin.header.build", "method": "admin.menu", "callbacked": false },
 		{ "hook": "filter:admin.create_routes", "method": "admin.route", "callbacked": true }

@@ -1,5 +1,5 @@
 
-var	fse = require('fs-extra'),
+var	fs = require('fs-extra'),
 	marked = require('marked'),
 	path = require('path'),
 
@@ -15,7 +15,7 @@ var	fse = require('fs-extra'),
 				return custom_header;
 			},
 			route: function(custom_routes, callback) {
-				fse.readFile(path.join(__dirname, '../README.md'), function(err, tpl) {
+				fs.readFile(path.join(__dirname, '../README.md'), function(err, tpl) {
 					marked(tpl.toString(), function(err, content){
 						if (err) throw err;
 
@@ -39,4 +39,5 @@ var	fse = require('fs-extra'),
 			}
 		}
 	};
+
 module.exports = ImportUbb;

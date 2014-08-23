@@ -1,32 +1,46 @@
 nodebb-plugin-import-ubb
 ========================
 
-a UBB forum exporter to import-ready files.
-
-a refactor of [nodebb-plugin-ubbmigrator](https://github.com/akhoury/nodebb-plugin-ubbmigrator)
-into this plugin to work along with [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import).
-
-__works, but still young__
+a UBB forum exporter to be required by [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import).
 
 ### What is this?
 
-It's __just__ an exporter of [UBB Threads data](http://www.ubbcentral.com/), into files that [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) can understand
-and import to NodeBB's database. So, it's not really a conventional nodebb-plugin, and you have to run it from the command line.
+It's __just__ an exporter of [UBB Threads data](http://www.ubbcentral.com/),  that provides an API that [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import)
+can use to exporter source forum data and import it to NodeBB's database. So, it's not really a conventional nodebb-plugin.
 
 ### Why is it even a NodeBB plugin?
 
 it doesn't really need to be, nor that you can use it within NodeBB it self, but, having this as a plugin have few benefits:
 * a nodebb- namespace, since you can't really use it for anything else
-* it can easily `require` NodeBB useful tools, currently, it uses its [util.js](https://github.com/designcreateplay/NodeBB/blob/master/public/src/utils.js) for example.
-* potentially, in the future, this plugin, __nodebb-plugin-import-ubb__ can interact with [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) for a better UX
+* it can easily `require` NodeBB useful tools, currently
 
-### Usage
+### Usage within NodeJS only
 
 ```
-cd NodeBB
-npm install nodebb-plugin-import-ubb
-cd node_modules/nodebb-plugin-import-ubb/bin
-node export.js --storage="$HOME/Desktop/storage" --config="../export.config.json" --log="debug,info,warn" --flush
+// you don't have to do this, nodebb-plugin-import will require this plugin and use its api
+// but if you want a run a test
+
+var exporter = require('nodebb-plugin-import-ubb');
+
+exporter.testrun({
+    dbhost: '127.0.0.1',
+    dbport: 3306,
+    dbname: 'ubb',
+    dbuser: 'user',
+    dbpass: 'password',
+
+    tablePrefix: 'ubbt_'
+}, function(err, results) {
+
+    /*
+        results[0] > config
+        results[1] > [usersMap, usersArray]
+        results[2] > [categoriesMap, categoriesArray]
+        results[3] > [topicsMap, topicsArray]
+        results[4] > [postsMap, postsArray]
+    */
+});
+
 ```
 
 ### What does it export?
@@ -68,33 +82,10 @@ read carefully:
     * `_content` YES (HTML - read the [Markdown Note](#markdown-note) below)
     * `_timestamp` YES, UBB uses Seconds, the exporter will convert to Milliseconds
 
-### I exported, now what?
-
-now use this [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) to import your files into NodeBB's database
-
-### Versions tested on:
+### UBB Versions tested on:
   - UBB 7.5.7
 
 ### You configs are required
-
-But you can override the log, storageDir and clearStorage ones with flags when using [bin/export.js](bin/export.js)
-```
-{
-	"log": "debug",
-	"storageDir": "../storage",
-
-	"clearStorage": false,
-
-	"db": {
-		"host": "localhost",
-		"user": "ubb_user",
-		"password": "password",
-		"database": "ubb_test"
-	},
-	"tablePrefix": "ubbt_"
-
-}
-```
 
 ### Markdown note
 
