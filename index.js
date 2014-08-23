@@ -3,29 +3,12 @@ var async = require('async');
 var mysql = require('mysql');
 var _ = require('underscore');
 var noop = function(){};
-
-
-var logPrefix = '[nodebb-plugin-import-ubb]',
-    warn = function() {
-        var args = _.toArray(arguments);
-        args.unshift(logPrefix);
-        console.warn.apply(console, args);
-    },
-    log = function() {
-        var args = _.toArray(arguments);
-        args.unshift(logPrefix);
-        console.log.apply(console, args);
-    },
-    error = function() {
-        var args = _.toArray(arguments);
-        args.unshift(logPrefix);
-        console.error.apply(console, args);
-    };
+var logPrefix = '[nodebb-plugin-import-ubb]';
 
 (function(Exporter) {
 
     Exporter.setup = function(config, callback) {
-        log('setup');
+        Exporter.log('setup');
 
         // mysql db only config
         // extract them from the configs passed by the nodebb-plugin-import adapter
@@ -37,7 +20,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
             database: config.dbname || config.name || config.database || 'ubb'
         };
 
-        log(_config);
+        Exporter.log(_config);
 
         Exporter.config(_config);
         Exporter.config('prefix', config.prefix || config.tablePrefix || 'ubbt_');
@@ -49,7 +32,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
     };
 
     Exporter.getUsers = function(callback) {
-        log('getUsers');
+        Exporter.log('getUsers');
         callback = !_.isFunction(callback) ? noop : callback;
 
         var err;
@@ -79,14 +62,14 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
-            error(err.error);
+            Exporter.error(err.error);
             return callback(err);
         }
 
         Exporter.connection.query(query,
             function(err, rows) {
                 if (err) {
-                    error(err);
+                    Exporter.error(err);
                     return callback(err);
                 }
 
@@ -115,7 +98,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
                         var requiredKeys = ['_username','_email'];
                         var falsyIndex = Exporter.whichIsFalsy(requiredValues);
 
-                        warn('Skipping user._uid: ' + row._uid + ' because ' + requiredKeys[falsyIndex] + ' is falsy. Value: ' + requiredValues[falsyIndex]);
+                        Exporter.warn('Skipping user._uid: ' + row._uid + ' because ' + requiredKeys[falsyIndex] + ' is falsy. Value: ' + requiredValues[falsyIndex]);
 
                     }
                 });
@@ -128,7 +111,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
     };
 
     Exporter.getCategories = function(callback) {
-        log('getCategories');
+        Exporter.log('getCategories');
         callback = !_.isFunction(callback) ? noop : callback;
 
         var err;
@@ -143,14 +126,14 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
-            error(err.error);
+            Exporter.error(err.error);
             return callback(err);
         }
 
         Exporter.connection.query(query,
             function(err, rows) {
                 if (err) {
-                    error(err);
+                    Exporter.error(err);
                     return callback(err);
                 }
 
@@ -163,7 +146,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
 
                         map[row._cid] = row;
                     } else {
-                        warn('Skipping category._cid:' + row._cid + ' because category._name=' + row._name + ' is invalid');
+                        Exporter.warn('Skipping category._cid:' + row._cid + ' because category._name=' + row._name + ' is invalid');
                     }
                 });
 
@@ -175,7 +158,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
     };
 
     Exporter.getTopics = function(callback) {
-        log('getTopics');
+        Exporter.log('getTopics');
         callback = !_.isFunction(callback) ? noop : callback;
 
         var err;
@@ -224,14 +207,14 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
-            error(err.error);
+            Exporter.error(err.error);
             return callback(err);
         }
 
         Exporter.connection.query(query,
             function(err, rows) {
                 if (err) {
-                    error(err);
+                    Exporter.error(err);
                     return callback(err);
                 }
 
@@ -241,13 +224,13 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
 
                 if (!Exporter._users) {
                     err = {error: 'Users are not in memory. ' + msg};
-                    error(err.error);
+                    Exporter.error(err.error);
                     return callback(err);
                 }
 
                 if (!Exporter._categories) {
                     err = {error: 'Categories are not in memory. ' + msg};
-                    error(err.error);
+                    Exporter.error(err.error);
                     return callback(err);
                 }
 
@@ -263,7 +246,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
                         var requiredKeys = ['category','user'];
                         var falsyIndex = Exporter.whichIsFalsy(requiredValues);
 
-                        warn('Skipping topic._tid: ' + row._tid + ' because ' + requiredKeys[falsyIndex] + ' is falsy. Value: ' + requiredValues[falsyIndex]);
+                        Exporter.warn('Skipping topic._tid: ' + row._tid + ' because ' + requiredKeys[falsyIndex] + ' is falsy. Value: ' + requiredValues[falsyIndex]);
                     }
                 });
 
@@ -275,7 +258,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
     };
 
     Exporter.getPosts = function(callback) {
-        log('getPosts');
+        Exporter.log('getPosts');
         callback = !_.isFunction(callback) ? noop : callback;
 
         var err;
@@ -305,14 +288,14 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
-            error(err.error);
+            Exporter.error(err.error);
             return callback(err);
         }
 
         Exporter.connection.query(query,
             function(err, rows) {
                 if (err) {
-                    error(err);
+                    Exporter.error(err);
                     return callback(err);
                 }
 
@@ -322,13 +305,13 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
 
                 if (!Exporter._users) {
                     err = {error: 'Users are not in memory. ' + msg};
-                    error(err.error);
+                    Exporter.error(err.error);
                     return callback(err);
                 }
 
                 if (!Exporter._topics) {
                     err = {error: 'Topics are not in memory. ' + msg};
-                    error(err.error);
+                    Exporter.error(err.error);
                     return callback(err);
                 }
 
@@ -341,7 +324,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
                         var requiredKeys = ['topic','user', 'content'];
                         var falsyIndex = Exporter.whichIsFalsy(requiredValues);
 
-                        warn('Skipping post._pid: ' + row._pid + ' because ' + requiredKeys[falsyIndex] + ' is falsy. Value: ' + requiredValues[falsyIndex]);
+                        Exporter.warn('Skipping post._pid: ' + row._pid + ' because ' + requiredKeys[falsyIndex] + ' is falsy. Value: ' + requiredValues[falsyIndex]);
                     }
                 });
 
@@ -350,10 +333,10 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
     };
 
     Exporter.teardown = function(callback) {
-        log('teardown');
+        Exporter.log('teardown');
         Exporter.connection.end();
 
-        log('Done');
+        Exporter.log('Done');
         callback();
     };
 
@@ -378,6 +361,24 @@ var logPrefix = '[nodebb-plugin-import-ubb]',
                 Exporter.teardown(next);
             }
         ], callback);
+    };
+
+    Exporter.warn = function() {
+        var args = _.toArray(arguments);
+        args.unshift(logPrefix);
+        console.warn.apply(console, args);
+    };
+
+    Exporter.log = function() {
+        var args = _.toArray(arguments);
+        args.unshift(logPrefix);
+        console.log.apply(console, args);
+    };
+    
+    Exporter.error = function() {
+        var args = _.toArray(arguments);
+        args.unshift(logPrefix);
+        console.error.apply(console, args);
     };
 
     Exporter.config = function(config, val) {
