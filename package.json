@@ -2,7 +2,7 @@
     "name": "nodebb-plugin-import-ubb",
     "version": "0.1.0",
     "description": "a UBB forum exporter to import-ready files",
-    "main": "./lib/export.js",
+    "main": "./index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
