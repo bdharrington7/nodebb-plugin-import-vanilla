@@ -106,7 +106,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                 // keep a copy of the users in memory here
                 Exporter._users = map;
 
-                callback(null, map, _.toArray(map));
+                callback(null, map);
             });
     };
 
@@ -153,7 +153,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                 // keep a copy in memory
                 Exporter._categories = map;
 
-                callback(null, map, _.toArray(map));
+                callback(null, map);
             });
     };
 
@@ -253,7 +253,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                 // keep a copy in memory
                 Exporter._topics = map;
 
-                callback(null, map, _.toArray(map));
+                callback(null, map);
             });
     };
 
@@ -328,7 +328,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                     }
                 });
 
-                callback(null, map, _.toArray(map));
+                callback(null, map);
             });
     };
 
