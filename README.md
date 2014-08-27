@@ -85,8 +85,6 @@ read carefully:
 ### UBB Versions tested on:
   - UBB 7.5.7
 
-### You configs are required
-
 ### Markdown note
 
 read [nodebb-plugin-import#markdown-note](https://github.com/akhoury/nodebb-plugin-import#markdown-note)
