@@ -34,10 +34,10 @@ exporter.testrun({
 
     /*
         results[0] > config
-        results[1] > [usersMap, usersArray]
-        results[2] > [categoriesMap, categoriesArray]
-        results[3] > [topicsMap, topicsArray]
-        results[4] > [postsMap, postsArray]
+        results[1] > usersMap
+        results[2] > categoriesMap
+        results[3] > topicsMap
+        results[4] > postsMap
     */
 });
 
