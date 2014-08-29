@@ -1,6 +1,6 @@
 {
     "name": "nodebb-plugin-import-ubb",
-    "version": "0.1.0",
+    "version": "0.1.0-1",
     "description": "a UBB forum exporter to import-ready files",
     "main": "./index.js",
     "scripts": {
