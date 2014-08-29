@@ -235,15 +235,15 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                 }
 
                 rows.forEach(function(row) {
-                    if (Exporter._categories[row._cid] && Exporter._users[row._uid]) {
+                    if (Exporter._categories[row._cid]) {
 
                         row._title = row._title ? row._title[0].toUpperCase() + row._title.substr(1) : 'Untitled';
                         row._timestamp = ((row._timestamp || 0) * 1000) || startms;
 
                         map[row._tid] = row;
                     } else {
-                        var requiredValues = [Exporter._categories[row._cid], Exporter._users[row._uid]];
-                        var requiredKeys = ['category','user'];
+                        var requiredValues = [Exporter._categories[row._cid]];
+                        var requiredKeys = ['category'];
                         var falsyIndex = Exporter.whichIsFalsy(requiredValues);
 
                         Exporter.warn('Skipping topic._tid: ' + row._tid + ' because ' + requiredKeys[falsyIndex] + ' is falsy. Value: ' + requiredValues[falsyIndex]);
@@ -316,12 +316,12 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                 }
 
                 rows.forEach(function(row) {
-                    if (Exporter._topics[row._tid] && Exporter._users[row._uid] && row._content) {
+                    if (Exporter._topics[row._tid] && row._content) {
                         row._timestamp = ((row._timestamp || 0) * 1000) || startms;
                         map[row._tid] = row;
                     } else {
-                        var requiredValues = [Exporter._topics[row._tid], Exporter._users[row._uid], row._content];
-                        var requiredKeys = ['topic','user', 'content'];
+                        var requiredValues = [Exporter._topics[row._tid], row._content];
+                        var requiredKeys = ['topic', 'content'];
                         var falsyIndex = Exporter.whichIsFalsy(requiredValues);
 
                         Exporter.warn('Skipping post._pid: ' + row._pid + ' because ' + requiredKeys[falsyIndex] + ' is falsy. Value: ' + requiredValues[falsyIndex]);
