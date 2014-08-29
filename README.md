@@ -34,10 +34,10 @@ exporter.testrun({
 
     /*
         results[0] > config
-        results[1] > usersMap
-        results[2] > categoriesMap
-        results[3] > topicsMap
-        results[4] > postsMap
+        results[1] > [usersMap, usersArray]
+        results[2] > [categoriesMap, categoriesArray]
+        results[3] > [topicsMap, topicsArray]
+        results[4] > [postsMap, postsArray]
     */
 });
 
@@ -50,7 +50,7 @@ read carefully:
     * `_username` YES. UBB for some reason allows duplicate users with same emails? so the first ones by ID orders will be saved, the rest will be skipped. (UBB appends [username]_dup[Number] next to the dups.. so those will be skipped too if the email is already used)
     * `_alternativeUsername` YES. as the __UBB.User.UserDisplayName__, which [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) will try to use if the username validation fails
     * `_password` NO. UBB uses MD5, NodeBB uses base64 I think, so can't do, but if you use [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) it will generate random passwords and hand them to you so can email them.
-    * `_level` (administrator and moderator) YES. Admins will stay Admins, and Moderators will stay Moderators, the catch here though is that each moderator is a moderator on ALL of the categories, since I didn't find anywhere UBB separating these powers. Hopefully soon you will be able to edit the Moderators easily via the NodeBB/admin.
+    * `_level` (administrator and moderator) YES. Admins will stay Admins, and Moderators will stay Moderators, the catch here though is that each moderator is a moderator on ALL of the categories
     * `_joindate` YES, UBB uses Seconds, the exported will convert to Milliseconds
     * `_website` YES. if URL looks valid, it is exported, but it's not checked if 404s
     * `_picture` YES. if URL looks valid, it is exported, but it's not checked if 404s, if not valid, it's set to "" and NodeBB will generate a gravatar URl for the user
