@@ -301,13 +301,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
 
                 //normalize here
                 var map = {};
-                var msg = 'You must run getUsers() and getTopics() before you can getPosts()';
-
-                if (!Exporter._users) {
-                    err = {error: 'Users are not in memory. ' + msg};
-                    Exporter.error(err.error);
-                    return callback(err);
-                }
+                var msg = 'You must run and getTopics() before you can getPosts()';
 
                 if (!Exporter._topics) {
                     err = {error: 'Topics are not in memory. ' + msg};
@@ -318,7 +312,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                 rows.forEach(function(row) {
                     if (Exporter._topics[row._tid] && row._content) {
                         row._timestamp = ((row._timestamp || 0) * 1000) || startms;
-                        map[row._tid] = row;
+                        map[row._pid] = row;
                     } else {
                         var requiredValues = [Exporter._topics[row._tid], row._content];
                         var requiredKeys = ['topic', 'content'];
