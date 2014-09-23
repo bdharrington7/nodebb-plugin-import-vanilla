@@ -2,3 +2,4 @@ node_modules
 results.json
 *.log
 .idea
+*.tpl
