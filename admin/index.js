@@ -16,7 +16,7 @@ var	fs = require('fs-extra'),
 				return custom_header;
 			},
 			route: function(custom_routes, callback) {
-				fs.readFile(path.join(__dirname, '../README.md'), function(err, tpl) {
+				fs.readFile(path.join(__dirname, '/../README.md'), function(err, tpl) {
 					marked(tpl.toString(), function(err, content){
 						if (err) throw err;
 
