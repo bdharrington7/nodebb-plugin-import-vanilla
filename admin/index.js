@@ -32,19 +32,15 @@ var	fs = require('fs-extra'),
 
                 fs.readFile(path.join(__dirname, '/../README.md'), function (err, tpl) {
 
-                    console.log('readme.read');
                     marked(tpl.toString(), function (err, content) {
                         if (err) {
                             console.warn(pkg.name, err);
                         }
-                        console.log('readme.marked');
                         content = note + (content || '');
                         fs.writeFile(path.join(__dirname, '/../public/templates/admin/plugins/' + nbbId + '.tpl'), content, {encoding: 'utf-8'}, function(err) {
                             if (err) {
                                 console.warn(pkg.name, err);
                             }
-                            console.log('readme.written');
-
                             callback();
                         });
                     });
