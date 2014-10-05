@@ -32,7 +32,9 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
     };
 
     Exporter.getUsers = function(callback) {
-        Exporter.log('getUsers');
+        return Exporter.getPaginatedUsers(0, -1, callback);
+    };
+    Exporter.getPaginatedUsers = function(start, limit, callback) {
         callback = !_.isFunction(callback) ? noop : callback;
 
         var err;
@@ -58,7 +60,9 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
             + prefix + 'USER_PROFILE.USER_BIRTHDAY as _birthday '
 
             + 'FROM ' + prefix + 'USERS, ' + prefix + 'USER_PROFILE '
-            + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID ';
+            + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID '
+            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
+
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -76,42 +80,32 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                 //normalize here
                 var map = {};
                 rows.forEach(function(row) {
-                    if (row._username && row._email) {
-
-                        // nbb forces signatures to be less than 150 chars
-                        // keeping it HTML see https://github.com/akhoury/nodebb-plugin-import#markdown-note
-                        row._signature = Exporter.truncateStr(row._signature || '', 150);
-
-                        // from unix timestamp (s) to JS timestamp (ms)
-                        row._joindate = ((row._joindate || 0) * 1000) || startms;
-
-                        // lower case the email for consistency
-                        row._email = row._email.toLowerCase();
-
-                        // I don't know about you about I noticed a lot my users have incomplete urls, urls like: http://
-                        row._picture = Exporter.validateUrl(row._picture);
-                        row._website = Exporter.validateUrl(row._website);
-
-                        map[row._uid] = row;
-                    } else {
-                        var requiredValues = [row._username, row._email];
-                        var requiredKeys = ['_username','_email'];
-                        var falsyIndex = Exporter.whichIsFalsy(requiredValues);
-
-                        Exporter.warn('Skipping user._uid: ' + row._uid + ' because ' + requiredKeys[falsyIndex] + ' is falsy. Value: ' + requiredValues[falsyIndex]);
-
-                    }
+                    // nbb forces signatures to be less than 150 chars
+                    // keeping it HTML see https://github.com/akhoury/nodebb-plugin-import#markdown-note
+                    row._signature = Exporter.truncateStr(row._signature || '', 150);
+    
+                    // from unix timestamp (s) to JS timestamp (ms)
+                    row._joindate = ((row._joindate || 0) * 1000) || startms;
+    
+                    // lower case the email for consistency
+                    row._email = (row._email || '').toLowerCase();
+    
+                    // I don't know about you about I noticed a lot my users have incomplete urls, urls like: http://
+                    row._picture = Exporter.validateUrl(row._picture);
+                    row._website = Exporter.validateUrl(row._website);
+    
+                    map[row._uid] = row;
                 });
-
-                // keep a copy of the users in memory here
-                Exporter._users = map;
 
                 callback(null, map);
             });
     };
 
+
     Exporter.getCategories = function(callback) {
-        Exporter.log('getCategories');
+        return Exporter.getPaginatedCategories(0, -1, callback);    
+    };
+    Exporter.getPaginatedCategories = function(start, limit, callback) {
         callback = !_.isFunction(callback) ? noop : callback;
 
         var err;
@@ -122,7 +116,9 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
             + prefix + 'FORUMS.FORUM_TITLE as _name, '
             + prefix + 'FORUMS.FORUM_DESCRIPTION as _description, '
             + prefix + 'FORUMS.FORUM_CREATED_ON as _timestamp '
-            + 'FROM ' + prefix + 'FORUMS ';
+            + 'FROM ' + prefix + 'FORUMS '
+            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
+
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -140,25 +136,21 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                 //normalize here
                 var map = {};
                 rows.forEach(function(row) {
-                    if (row._name) {
-                        row._description = row._description || 'No decsciption available';
-                        row._timestamp = ((row._timestamp || 0) * 1000) || startms;
-
-                        map[row._cid] = row;
-                    } else {
-                        Exporter.warn('Skipping category._cid:' + row._cid + ' because category._name=' + row._name + ' is invalid');
-                    }
+                    row._name = row._name || 'Untitled Category '
+                    row._description = row._description || 'No decsciption available';
+                    row._timestamp = ((row._timestamp || 0) * 1000) || startms;
+    
+                    map[row._cid] = row;
                 });
-
-                // keep a copy in memory
-                Exporter._categories = map;
 
                 callback(null, map);
             });
     };
 
     Exporter.getTopics = function(callback) {
-        Exporter.log('getTopics');
+        return Exporter.getPaginatedTopics(0, -1, callback);
+    };
+    Exporter.getPaginatedTopics = function(start, limit, callback) {
         callback = !_.isFunction(callback) ? noop : callback;
 
         var err;
@@ -203,7 +195,8 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
             // see
             + 'WHERE ' + prefix + 'TOPICS.TOPIC_ID=' + prefix + 'POSTS.TOPIC_ID '
             // and this one must be a parent
-            + 'AND ' + prefix + 'POSTS.POST_PARENT_ID=0 ';
+            + 'AND ' + prefix + 'POSTS.POST_PARENT_ID=0 '
+            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -220,45 +213,22 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
 
                 //normalize here
                 var map = {};
-                var msg = 'You must run getUsers() and getCategories() before you can getTopics()';
-
-                if (!Exporter._users) {
-                    err = {error: 'Users are not in memory. ' + msg};
-                    Exporter.error(err.error);
-                    return callback(err);
-                }
-
-                if (!Exporter._categories) {
-                    err = {error: 'Categories are not in memory. ' + msg};
-                    Exporter.error(err.error);
-                    return callback(err);
-                }
 
                 rows.forEach(function(row) {
-                    if (Exporter._categories[row._cid]) {
-
-                        row._title = row._title ? row._title[0].toUpperCase() + row._title.substr(1) : 'Untitled';
-                        row._timestamp = ((row._timestamp || 0) * 1000) || startms;
-
-                        map[row._tid] = row;
-                    } else {
-                        var requiredValues = [Exporter._categories[row._cid]];
-                        var requiredKeys = ['category'];
-                        var falsyIndex = Exporter.whichIsFalsy(requiredValues);
-
-                        Exporter.warn('Skipping topic._tid: ' + row._tid + ' because ' + requiredKeys[falsyIndex] + ' is falsy. Value: ' + requiredValues[falsyIndex]);
-                    }
+                    row._title = row._title ? row._title[0].toUpperCase() + row._title.substr(1) : 'Untitled';
+                    row._timestamp = ((row._timestamp || 0) * 1000) || startms;
+    
+                    map[row._tid] = row;
                 });
-
-                // keep a copy in memory
-                Exporter._topics = map;
 
                 callback(null, map);
             });
     };
 
     Exporter.getPosts = function(callback) {
-        Exporter.log('getPosts');
+        return Exporter.getPaginatedPosts(0, -1, callback);
+    };
+    Exporter.getPaginatedPosts = function(start, limit, callback) {
         callback = !_.isFunction(callback) ? noop : callback;
 
         var err;
@@ -284,7 +254,9 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
             + 'FROM ' + prefix + 'POSTS '
             // this post cannot be a its topic's main post, it MUST be a reply-post
             // see https://github.com/akhoury/nodebb-plugin-import#important-note-on-topics-and-posts
-            + 'WHERE POST_PARENT_ID > 0 ';
+            + 'WHERE POST_PARENT_ID > 0 '
+            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
+
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -301,25 +273,10 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
 
                 //normalize here
                 var map = {};
-                var msg = 'You must run and getTopics() before you can getPosts()';
-
-                if (!Exporter._topics) {
-                    err = {error: 'Topics are not in memory. ' + msg};
-                    Exporter.error(err.error);
-                    return callback(err);
-                }
-
                 rows.forEach(function(row) {
-                    if (Exporter._topics[row._tid] && row._content) {
-                        row._timestamp = ((row._timestamp || 0) * 1000) || startms;
-                        map[row._pid] = row;
-                    } else {
-                        var requiredValues = [Exporter._topics[row._tid], row._content];
-                        var requiredKeys = ['topic', 'content'];
-                        var falsyIndex = Exporter.whichIsFalsy(requiredValues);
-
-                        Exporter.warn('Skipping post._pid: ' + row._pid + ' because ' + requiredKeys[falsyIndex] + ' is falsy. Value: ' + requiredValues[falsyIndex]);
-                    }
+                    row._content = row._content || '';
+                    row._timestamp = ((row._timestamp || 0) * 1000) || startms;
+                    map[row._pid] = row;
                 });
 
                 callback(null, map);
@@ -350,6 +307,29 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
             },
             function(next) {
                 Exporter.getPosts(next);
+            },
+            function(next) {
+                Exporter.teardown(next);
+            }
+        ], callback);
+    };
+    
+    Exporter.paginatedTestrun = function(config, callback) {
+        async.series([
+            function(next) {
+                Exporter.setup(config, next);
+            },
+            function(next) {
+                Exporter.getPaginatedUsers(0, 1000, next);
+            },
+            function(next) {
+                Exporter.getPaginatedCategories(0, 1000, next);
+            },
+            function(next) {
+                Exporter.getPaginatedTopics(0, 1000, next);
+            },
+            function(next) {
+                Exporter.getPaginatedPosts(1001, 2000, next);
             },
             function(next) {
                 Exporter.teardown(next);
