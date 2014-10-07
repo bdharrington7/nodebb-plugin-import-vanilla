@@ -23,7 +23,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
         Exporter.log(_config);
 
         Exporter.config(_config);
-        Exporter.config('prefix', config.prefix || config.tablePrefix || 'ubbt_');
+        Exporter.config('prefix', config.prefix || config.tablePrefix || '');
 
         Exporter.connection = mysql.createConnection(_config);
         Exporter.connection.connect();
