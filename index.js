@@ -20,8 +20,6 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
             database: config.dbname || config.name || config.database || 'ubb'
         };
 
-        Exporter.log(_config);
-
         Exporter.config(_config);
         Exporter.config('prefix', config.prefix || config.tablePrefix || '');
 
