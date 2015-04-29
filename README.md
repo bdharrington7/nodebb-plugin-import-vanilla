@@ -5,7 +5,7 @@ a UBB forum exporter to be required by [nodebb-plugin-import](https://github.com
 
 ### What is this?
 
-It's __just__ an exporter of [UBB Threads data](http://www.ubbcentral.com/),  that provides an API that [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import)
+It's __just__ an exporter of [Vanilla Forums data](http://www.vanillaforums.org/),  that provides an API that [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import)
 can use to exporter source forum data and import it to NodeBB's database. So, it's not really a conventional nodebb-plugin.
 
 ### Why is it even a NodeBB plugin?
@@ -82,8 +82,8 @@ read carefully:
     * `_content` YES (HTML - read the [Markdown Note](#markdown-note) below)
     * `_timestamp` YES, UBB uses Seconds, the exporter will convert to Milliseconds
 
-### UBB Versions tested on:
-  - UBB 7.5.7
+### Vanilla Versions tested on:
+  - Vanilla 2.1.8p2
 
 ### Markdown note
 
@@ -92,4 +92,3 @@ read [nodebb-plugin-import#markdown-note](https://github.com/akhoury/nodebb-plug
 ### It's an exporter, why does it have 'import' in its title
 
 To keep the namespacing accurate, this __exporter__ is designed to export data for [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) only, also for a 1 time use, so why do you care.
-

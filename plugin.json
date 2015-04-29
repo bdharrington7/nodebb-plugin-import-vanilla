@@ -1,8 +1,8 @@
 {
-	"id": "nodebb-plugin-import-ubb",
-	"name": "nodebb-plugin-import-ubb",
-	"description": "Exporter for UBB forum compatible with nodebb-plugin-import",
-	"url": "https://github.com/akhoury/nodebb-plugin-import-ubb",
+	"id": "nodebb-plugin-import-vanilla",
+	"name": "nodebb-plugin-import-vanilla",
+	"description": "Exporter for Vanilla forums compatible with nodebb-plugin-import",
+	"url": "https://github.com/bdharrington7/nodebb-plugin-import-vanilla",
 	"library": "./admin/index.js",
 	"hooks": [
 		{ "hook": "filter:admin.header.build", "method": "admin.menu"},

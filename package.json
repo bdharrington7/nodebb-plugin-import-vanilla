@@ -1,17 +1,17 @@
 {
-    "name": "nodebb-plugin-import-ubb",
-    "version": "0.1.3",
-    "description": "a UBB forum exporter to import-ready files",
+    "name": "nodebb-plugin-import-vanilla",
+    "version": "0.0.1",
+    "description": "a Vanilla forum exporter to import-ready files",
     "main": "./index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/akhoury/nodebb-plugin-import-ubb"
+        "url": "https://github.com/bdharrington7/nodebb-plugin-import-vanilla"
     },
     "keywords": [
-        "ubb",
+        "vanilla",
         "nodebb",
         "plugin",
         "migrate",
@@ -20,12 +20,12 @@
         "import"
     ],
     "author": {
-        "name": "akhoury",
-        "email": "bentael@gmail.com"
+        "name": "Brian Harrington",
+        "email": "BDHarrington7@gmail.com"
     },
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/akhoury/nodebb-plugin-import-ubb/issues"
+        "url": "https://github.com/bdharrington7/nodebb-plugin-import-vanilla/issues"
     },
     "dependencies": {
         "underscore": "~1.6.0",

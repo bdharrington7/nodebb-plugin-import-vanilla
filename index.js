@@ -3,7 +3,7 @@ var async = require('async');
 var mysql = require('mysql');
 var _ = require('underscore');
 var noop = function(){};
-var logPrefix = '[nodebb-plugin-import-ubb]';
+var logPrefix = '[nodebb-plugin-import-vanilla]';
 
 (function(Exporter) {
 
@@ -17,7 +17,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
             user: config.dbuser || config.user || 'root',
             password: config.dbpass || config.pass || config.password || '',
             port: config.dbport || config.port || 3306,
-            database: config.dbname || config.name || config.database || 'ubb'
+            database: config.dbname || config.name || config.database || 'vanilla'
         };
 
         Exporter.config(_config);
@@ -81,17 +81,17 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                     // nbb forces signatures to be less than 150 chars
                     // keeping it HTML see https://github.com/akhoury/nodebb-plugin-import#markdown-note
                     row._signature = Exporter.truncateStr(row._signature || '', 150);
-    
+
                     // from unix timestamp (s) to JS timestamp (ms)
                     row._joindate = ((row._joindate || 0) * 1000) || startms;
-    
+
                     // lower case the email for consistency
                     row._email = (row._email || '').toLowerCase();
-    
+
                     // I don't know about you about I noticed a lot my users have incomplete urls, urls like: http://
                     row._picture = Exporter.validateUrl(row._picture);
                     row._website = Exporter.validateUrl(row._website);
-    
+
                     map[row._uid] = row;
                 });
 
@@ -101,7 +101,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
 
 
     Exporter.getCategories = function(callback) {
-        return Exporter.getPaginatedCategories(0, -1, callback);    
+        return Exporter.getPaginatedCategories(0, -1, callback);
     };
     Exporter.getPaginatedCategories = function(start, limit, callback) {
         callback = !_.isFunction(callback) ? noop : callback;
@@ -137,7 +137,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                     row._name = row._name || 'Untitled Category '
                     row._description = row._description || 'No decsciption available';
                     row._timestamp = ((row._timestamp || 0) * 1000) || startms;
-    
+
                     map[row._cid] = row;
                 });
 
@@ -215,7 +215,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
                 rows.forEach(function(row) {
                     row._title = row._title ? row._title[0].toUpperCase() + row._title.substr(1) : 'Untitled';
                     row._timestamp = ((row._timestamp || 0) * 1000) || startms;
-    
+
                     map[row._tid] = row;
                 });
 
@@ -311,7 +311,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
             }
         ], callback);
     };
-    
+
     Exporter.paginatedTestrun = function(config, callback) {
         async.series([
             function(next) {
@@ -346,7 +346,7 @@ var logPrefix = '[nodebb-plugin-import-ubb]';
         args.unshift(logPrefix);
         console.log.apply(console, args);
     };
-    
+
     Exporter.error = function() {
         var args = _.toArray(arguments);
         args.unshift(logPrefix);

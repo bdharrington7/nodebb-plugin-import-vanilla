@@ -7,7 +7,7 @@ require('./index').testrun({
     dbuser: 'user',
     dbpass: 'password',
 
-    tablePrefix: 'ubbt_'
+    tablePrefix: 'GDN_'
 }, function(err, results) {
     // fs.writeFileSync('./results.json', JSON.stringify(results, undefined, 2));
 });
