@@ -3,3 +3,4 @@ results.json
 *.log
 .idea
 *.tpl
+.DS_Store
