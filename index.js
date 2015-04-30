@@ -21,7 +21,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         };
 
         Exporter.config(_config);
-        Exporter.config('prefix', config.prefix || config.tablePrefix || '');
+        Exporter.config('prefix', config.prefix || config.tablePrefix || 'GDN_');
 
         Exporter.connection = mysql.createConnection(_config);
         Exporter.connection.connect();
@@ -39,26 +39,28 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var prefix = Exporter.config('prefix');
         var startms = +new Date();
         var query = 'SELECT '
-            + prefix + 'USERS.USER_ID as _uid, '
-            + prefix + 'USERS.USER_LOGIN_NAME as _username, '
-            + prefix + 'USERS.USER_DISPLAY_NAME as _alternativeUsername, '
-            + prefix + 'USERS.USER_REGISTRATION_EMAIL as _registrationEmail, '
-            + prefix + 'USERS.USER_MEMBERSHIP_LEVEL as _level, '
-            + prefix + 'USERS.USER_REGISTERED_ON as _joindate, '
-            + prefix + 'USERS.USER_IS_banned as _banned, '
-            + prefix + 'USER_PROFILE.USER_REAL_EMAIL as _email, '
-            + prefix + 'USER_PROFILE.USER_SIGNATURE as _signature, '
-            + prefix + 'USER_PROFILE.USER_HOMEPAGE as _website, '
-            + prefix + 'USER_PROFILE.USER_OCCUPATION as _occupation, '
-            + prefix + 'USER_PROFILE.USER_LOCATION as _location, '
-            + prefix + 'USER_PROFILE.USER_AVATAR as _picture, '
-            + prefix + 'USER_PROFILE.USER_TITLE as _title, '
-            + prefix + 'USER_PROFILE.USER_RATING as _reputation, '
-            + prefix + 'USER_PROFILE.USER_TOTAL_RATES as _profileviews, '
-            + prefix + 'USER_PROFILE.USER_BIRTHDAY as _birthday '
+            + prefix + 'User.UserID as _uid, '
+            + prefix + 'User.Name as _username, '
+            // + prefix + 'User.USER_DISPLAY_NAME as _alternativeUsername, '
+            + prefix + 'User.Email as _registrationEmail, '
+            + 'if (' + prefix + 'User.Admin = 1, "administrator", "") as _level, '
+            + prefix + 'User.DateFirstVisit as _joindate, '
+            + prefix + 'User.Banned as _banned, '
+            + prefix + 'User.Email as _email, '
+            // + prefix + 'USER_PROFILE.USER_SIGNATURE as _signature, '
+            // + prefix + 'USER_PROFILE.USER_HOMEPAGE as _website, '
+            // + prefix + 'USER_PROFILE.USER_OCCUPATION as _occupation, '
+            // + prefix + 'USER_PROFILE.USER_LOCATION as _location, '
+            + prefix + 'User.Photo as _picture, '
+            // + prefix + 'USER_PROFILE.USER_TITLE as _title, '
+            // + prefix + 'USER_PROFILE.USER_RATING as _reputation, '
+            // count both discussions and Comments as posts
+            '('+ prefix + 'User.CountDiscussions + ' + prefix + 'User.CountComments) as _posts, ' // TODO _posts exists?
+            + prefix + 'User.DateOfBirth as _birthday '
 
-            + 'FROM ' + prefix + 'USERS, ' + prefix + 'USER_PROFILE '
-            + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID '
+            + 'FROM ' + prefix + 'User, ' //+ prefix + 'USER_PROFILE '
+            + 'WHERE ' + prefix + 'User.Deleted = 0 '
+            // + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
 
