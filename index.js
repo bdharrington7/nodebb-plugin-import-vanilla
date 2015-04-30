@@ -44,7 +44,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + prefix + 'User.USER_DISPLAY_NAME as _alternativeUsername, '
             + prefix + 'User.Email as _registrationEmail, '
             + 'if (' + prefix + 'User.Admin = 1, "administrator", "") as _level, '
-            + prefix + 'User.DateFirstVisit as _joindate, '
+            + 'UNIX_TIMESTAMP('+ prefix + 'User.DateFirstVisit) as _joindate, '
             + prefix + 'User.Banned as _banned, '
             + prefix + 'User.Email as _email, '
             // + prefix + 'USER_PROFILE.USER_SIGNATURE as _signature, '
@@ -54,9 +54,11 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + prefix + 'User.Photo as _picture, '
             // + prefix + 'USER_PROFILE.USER_TITLE as _title, '
             // + prefix + 'USER_PROFILE.USER_RATING as _reputation, '
+            + prefix + 'User.ShowEmail as _showemail, '
+            + 'UNIX_TIMESTAMP('+ prefix + 'User.DateLastActive) as _lastposttime, ' // approximate
             // count both discussions and Comments as posts
             '('+ prefix + 'User.CountDiscussions + ' + prefix + 'User.CountComments) as _posts, ' // TODO _posts exists?
-            + prefix + 'User.DateOfBirth as _birthday '
+            + 'DATE_FORMAT('+ prefix + 'User.DateOfBirth, "%m/%d/%Y") as _birthday ' // format: mm/dd/yyyy
 
             + 'FROM ' + prefix + 'User, ' //+ prefix + 'USER_PROFILE '
             + 'WHERE ' + prefix + 'User.Deleted = 0 '
