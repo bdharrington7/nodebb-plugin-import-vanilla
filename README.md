@@ -1,7 +1,7 @@
-nodebb-plugin-import-ubb
+nodebb-plugin-import-vanilla
 ========================
 
-a UBB forum exporter to be required by [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import).
+A Vanilla forum exporter to be required by [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import).
 
 ### What is this?
 
@@ -29,7 +29,7 @@ exporter.testrun({
     dbuser: 'user',
     dbpass: 'password',
 
-    tablePrefix: 'ubbt_'
+    tablePrefix: 'GDN_'
 }, function(err, results) {
 
     /*
@@ -43,7 +43,7 @@ exporter.testrun({
 
 ```
 
-### What does it export?
+### What does it export? //TODO
 read carefully:
 
 - ####Users:
