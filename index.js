@@ -53,7 +53,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + prefix + 'USER_PROFILE.USER_LOCATION as _location, '
             + prefix + 'User.Photo as _picture, '
             // + prefix + 'USER_PROFILE.USER_TITLE as _title, '
-            // + prefix + 'USER_PROFILE.USER_RATING as _reputation, '
+            // + prefix + 'USER_PROFILE.USER_RATING as _reputation, ' // if Kudos is present, function of loves vs likes
             + prefix + 'User.ShowEmail as _showemail, '
             + 'UNIX_TIMESTAMP('+ prefix + 'User.DateLastActive) as _lastposttime, ' // approximate
             // count both discussions and Comments as posts
@@ -103,7 +103,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             });
     };
 
-
+// Categories come from the GDN_Category table
     Exporter.getCategories = function(callback) {
         return Exporter.getPaginatedCategories(0, -1, callback);
     };
@@ -114,11 +114,11 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var prefix = Exporter.config('prefix');
         var startms = +new Date();
         var query = 'SELECT '
-            + prefix + 'FORUMS.FORUM_ID as _cid, '
-            + prefix + 'FORUMS.FORUM_TITLE as _name, '
-            + prefix + 'FORUMS.FORUM_DESCRIPTION as _description, '
-            + prefix + 'FORUMS.FORUM_CREATED_ON as _timestamp '
-            + 'FROM ' + prefix + 'FORUMS '
+            + 'tblCategory.CategoryID as _cid, '
+            + 'tblCategory.Name as _name, '
+            + 'tblCategory.Description as _description, '
+            + 'UNIX_TIMESTAMP(tblCategory.DateInserted) as _timestamp '
+            + 'FROM ' + prefix + 'Category as tblCategory '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
 
@@ -160,44 +160,44 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var startms = +new Date();
         var query =
             'SELECT '
-            + prefix + 'TOPICS.TOPIC_ID as _tid, '
+             + 'tblTopics.DiscussionID as _tid, '
 
             // aka category id, or cid
-            + prefix + 'TOPICS.FORUM_ID as _cid, '
+             + 'tblTopics.CategoryID as _cid, '
 
             // this is the 'parent-post'
             // see https://github.com/akhoury/nodebb-plugin-import#important-note-on-topics-and-posts
             // I don't really need it since I just do a simple join and get its content, but I will include for the reference
             // remember: this post is EXCLUDED in the getPosts() function
-            + prefix + 'TOPICS.POST_ID as _pid, '
+             + 'tblTopics.POST_ID as _pid, ' // ???
 
-            + prefix + 'TOPICS.USER_ID as _uid, '
-            + prefix + 'TOPICS.TOPIC_VIEWS as _viewcount, '
-            + prefix + 'TOPICS.TOPIC_SUBJECT as _title, '
-            + prefix + 'TOPICS.TOPIC_CREATED_TIME as _timestamp, '
+             + 'tblTopics.InsertUserID as _uid, '
+             + 'tblTopics.CountViews as _viewcount, '
+             + 'tblTopics.Name as _title, '
+             + 'UNIX_TIMESTAMP(tblTopics.DateInserted) as _timestamp, '
 
             // maybe use that to skip
-            + prefix + 'TOPICS.TOPIC_IS_APPROVED as _approved, '
+             + 'tblTopics.TOPIC_IS_APPROVED as _approved, '
 
             // todo:  figure out what this means,
-            + prefix + 'TOPICS.TOPIC_STATUS as _status, '
+             + 'tblTopics.TOPIC_STATUS as _status, '  // ???
 
-            + prefix + 'TOPICS.TOPIC_IS_STICKY as _pinned, '
+             + 'tblTopics.Announce as _pinned, '
 
             // I dont need it, but if it should be 0 per UBB logic, since this post is not replying to anything, it's the parent-post of the topic
-            + prefix + 'POSTS.POST_PARENT_ID as _post_replying_to, '
+            //  + 'tblPosts.POST_PARENT_ID as _post_replying_to, '
 
             // this should be == to the _tid on top of this query
-            + prefix + 'POSTS.TOPIC_ID as _post_tid, '
+            //  + 'tblPosts.DiscussionID as _post_tid, '
 
             // and there is the content I need !!
-            + prefix + 'POSTS.POST_BODY as _content '
+             + 'tblTopics.Body as _content '
 
-            + 'FROM ' + prefix + 'TOPICS, ' + prefix + 'POSTS '
+            + 'FROM '  + prefix + 'Discussion as tblTopics '// + prefix + ', Comment as tblPosts '
             // see
-            + 'WHERE ' + prefix + 'TOPICS.TOPIC_ID=' + prefix + 'POSTS.TOPIC_ID '
+            // + 'WHERE tblTopics.TOPIC_ID = tblPosts.TOPIC_ID '
             // and this one must be a parent
-            + 'AND ' + prefix + 'POSTS.POST_PARENT_ID=0 '
+            // + 'AND '  + 'tblPosts.POST_PARENT_ID=0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
         if (!Exporter.connection) {
@@ -253,7 +253,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // maybe use this one to skip
             + 'POST_IS_APPROVED as _approved '
 
-            + 'FROM ' + prefix + 'POSTS '
+            + 'FROM '  + 'tblPosts '
             // this post cannot be a its topic's main post, it MUST be a reply-post
             // see https://github.com/akhoury/nodebb-plugin-import#important-note-on-topics-and-posts
             + 'WHERE POST_PARENT_ID > 0 '
