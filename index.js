@@ -177,7 +177,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
              + 'UNIX_TIMESTAMP(tblTopics.DateInserted) as _timestamp, '
 
             // maybe use that to skip
-             + 'tblTopics.TOPIC_IS_APPROVED as _approved, '
+            //  + 'tblTopics.TOPIC_IS_APPROVED as _approved, '
 
             // todo:  figure out what this means,
              + 'tblTopics.TOPIC_STATUS as _status, '  // ???
@@ -237,26 +237,27 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var prefix = Exporter.config('prefix');
         var startms = +new Date();
         var query =
-            'SELECT POST_ID as _pid, '
-            + 'POST_PARENT_ID as _post_replying_to, '
-            + 'TOPIC_ID as _tid, '
-            + 'POST_POSTED_TIME as _timestamp, '
+            'SELECT '
+            + 'tblPosts.CommentID as _pid, '
+            + 'tblPosts.DiscussionID as _post_replying_to, '
+            + 'tblPosts.DiscussionID as _tid, '
+            + 'UNIX_TIMESTAMP(tblPosts.DateInserted) as _timestamp, '
             // not being used
-            + 'POST_SUBJECT as _subject, '
+            // + 'tblPosts.POST_SUBJECT as _subject, '
 
-            + 'POST_BODY as _content, '
-            + 'USER_ID as _uid, '
+            + 'tblPosts.Body as _content, '
+            + 'tblPosts.InsertUserID as _uid, '
 
             // I couldn't tell what's the different, they're all HTML to me
-            + 'POST_MARKUP_TYPE as _markup, '
+            + 'tblPosts.Format as _markup, ' // TODO have to convert this one, val is "html"
 
             // maybe use this one to skip
-            + 'POST_IS_APPROVED as _approved '
+            // + 'tblPosts.POST_IS_APPROVED as _approved '
 
-            + 'FROM '  + 'tblPosts '
+            + 'FROM ' + prefix + 'Comment as tblPosts '
             // this post cannot be a its topic's main post, it MUST be a reply-post
             // see https://github.com/akhoury/nodebb-plugin-import#important-note-on-topics-and-posts
-            + 'WHERE POST_PARENT_ID > 0 '
+            // + 'WHERE POST_PARENT_ID > 0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
 
