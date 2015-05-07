@@ -39,29 +39,29 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var prefix = Exporter.config('prefix');
         var startms = +new Date();
         var query = 'SELECT '
-            + prefix + 'User.UserID as _uid, '
-            + prefix + 'User.Name as _username, '
-            // + prefix + 'User.USER_DISPLAY_NAME as _alternativeUsername, '
-            + prefix + 'User.Email as _registrationEmail, '
-            + 'if (' + prefix + 'User.Admin = 1, "administrator", "") as _level, '
-            + 'UNIX_TIMESTAMP('+ prefix + 'User.DateFirstVisit) as _joindate, '
-            + prefix + 'User.Banned as _banned, '
-            + prefix + 'User.Email as _email, '
+            + 'tblUser.UserID as _uid, '
+            + 'tblUser.Name as _username, '
+            // + 'tblUser.USER_DISPLAY_NAME as _alternativeUsername, '
+            + 'tblUser.Email as _registrationEmail, '
+            + 'if (tblUser.Admin = 1, "administrator", "") as _level, '
+            + 'UNIX_TIMESTAMP(tblUser.DateFirstVisit) as _joindate, '
+            + 'tblUser.Banned as _banned, '
+            + 'tblUser.Email as _email, '
             // + prefix + 'USER_PROFILE.USER_SIGNATURE as _signature, '
             // + prefix + 'USER_PROFILE.USER_HOMEPAGE as _website, '
             // + prefix + 'USER_PROFILE.USER_OCCUPATION as _occupation, '
             // + prefix + 'USER_PROFILE.USER_LOCATION as _location, '
-            + prefix + 'User.Photo as _picture, '
+            + 'tblUser.Photo as _picture, '
             // + prefix + 'USER_PROFILE.USER_TITLE as _title, '
             // + prefix + 'USER_PROFILE.USER_RATING as _reputation, ' // if Kudos is present, function of loves vs likes
-            + prefix + 'User.ShowEmail as _showemail, '
-            + 'UNIX_TIMESTAMP('+ prefix + 'User.DateLastActive) as _lastposttime, ' // approximate
+            + 'tblUser.ShowEmail as _showemail, '
+            + 'UNIX_TIMESTAMP(tblUser.DateLastActive) as _lastposttime, ' // approximate
             // count both discussions and Comments as posts
-            '('+ prefix + 'User.CountDiscussions + ' + prefix + 'User.CountComments) as _posts, ' // TODO _posts exists?
-            + 'DATE_FORMAT('+ prefix + 'User.DateOfBirth, "%m/%d/%Y") as _birthday ' // format: mm/dd/yyyy
+            + '(tblUser.CountDiscussions + tblUser.CountComments) as _postcount, '
+            + 'DATE_FORMAT(tblUser.DateOfBirth, "%m/%d/%Y") as _birthday ' // format: mm/dd/yyyy
 
-            + 'FROM ' + prefix + 'User, ' //+ prefix + 'USER_PROFILE '
-            + 'WHERE ' + prefix + 'User.Deleted = 0 '
+            + 'FROM ' + prefix + 'User as tblUser, ' //+ prefix + 'USER_PROFILE '
+            + 'WHERE tblUser.Deleted = 0 '
             // + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
@@ -119,7 +119,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblCategory.Description as _description, '
             + 'UNIX_TIMESTAMP(tblCategory.DateInserted) as _timestamp '
             + 'FROM ' + prefix + 'Category as tblCategory '
-            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
+            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '')
+            + 'WHERE tblCategory.CategoryID > -1'; // GDN has a root category with id -1 we don't use
 
 
         if (!Exporter.connection) {
@@ -169,7 +170,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // see https://github.com/akhoury/nodebb-plugin-import#important-note-on-topics-and-posts
             // I don't really need it since I just do a simple join and get its content, but I will include for the reference
             // remember: this post is EXCLUDED in the getPosts() function
-             + 'tblTopics.POST_ID as _pid, ' // ???
+            //  + 'tblTopics.POST_ID as _pid, ' // Don't need this for Vanilla
 
              + 'tblTopics.InsertUserID as _uid, '
              + 'tblTopics.CountViews as _viewcount, '
@@ -180,7 +181,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             //  + 'tblTopics.TOPIC_IS_APPROVED as _approved, '
 
             // todo:  figure out what this means,
-             + 'tblTopics.TOPIC_STATUS as _status, '  // ???
+            //  + 'tblTopics.TOPIC_STATUS as _status, '  // don't need this
 
              + 'tblTopics.Announce as _pinned, '
 
@@ -190,7 +191,6 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // this should be == to the _tid on top of this query
             //  + 'tblPosts.DiscussionID as _post_tid, '
 
-            // and there is the content I need !!
              + 'tblTopics.Body as _content '
 
             + 'FROM '  + prefix + 'Discussion as tblTopics '// + prefix + ', Comment as tblPosts '
@@ -249,7 +249,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblPosts.InsertUserID as _uid, '
 
             // I couldn't tell what's the different, they're all HTML to me
-            + 'tblPosts.Format as _markup, ' // TODO have to convert this one, val is "html"
+            + 'tblPosts.Format as _markup, ' // TODO have to convert this one to markup?, val is "html"
 
             // maybe use this one to skip
             // + 'tblPosts.POST_IS_APPROVED as _approved '
