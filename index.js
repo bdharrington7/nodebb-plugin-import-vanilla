@@ -22,6 +22,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
         Exporter.config(_config);
         Exporter.config('prefix', config.prefix || config.tablePrefix || 'GDN_');
+        Exporter.config('kudosEnabled', config.kudosEnabled === true);
 
         Exporter.connection = mysql.createConnection(_config);
         Exporter.connection.connect();
@@ -37,6 +38,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
         var err;
         var prefix = Exporter.config('prefix');
+        var kudosEnabled = Exporter.config('kudosEnabled');
         var startms = +new Date();
         var query = 'SELECT '
             + 'tblUser.UserID as _uid, '
@@ -51,10 +53,17 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + prefix + 'USER_PROFILE.USER_HOMEPAGE as _website, '
             // + prefix + 'USER_PROFILE.USER_OCCUPATION as _occupation, '
             // + prefix + 'USER_PROFILE.USER_LOCATION as _location, '
-            + 'tblUser.Photo as _picture, '
+            + 'tblUser.Photo as _picture, ';
             // + prefix + 'USER_PROFILE.USER_TITLE as _title, '
-            // + prefix + 'USER_PROFILE.USER_RATING as _reputation, ' // if Kudos is present, function of loves vs likes
-            + 'tblUser.ShowEmail as _showemail, '
+        if (kudosEnabled) {
+           query += '(SELECT SUM(IF(Action=1, 1, -1)) '
+                 + 'FROM GDN_Kudos AS tblK '
+                 + 'LEFT JOIN GDN_Discussion AS tblD ON tblK.DiscussionID = tblD.DiscussionID '
+                 + 'LEFT JOIN GDN_Comment AS tblC ON tblC.CommentID=tblK.CommentID '
+                 + 'WHERE tblD.InsertUserID=_uid OR tblC.InsertUserID=_uid) AS _reputation, '
+        }
+
+        query += 'tblUser.ShowEmail as _showemail, '
             + 'UNIX_TIMESTAMP(tblUser.DateLastActive) as _lastposttime, ' // approximate
             // count both discussions and Comments as posts
             + '(tblUser.CountDiscussions + tblUser.CountComments) as _postcount, '
