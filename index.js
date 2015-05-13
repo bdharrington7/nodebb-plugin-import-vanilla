@@ -56,6 +56,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblUser.Photo as _picture, ';
             // + prefix + 'USER_PROFILE.USER_TITLE as _title, '
         if (kudosEnabled) {
+           Exporter.log('Importing uer reputation from Kudos');
            query += '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
                     + 'FROM Kudos AS tblK '
                     + 'INNER JOIN Discussions AS tblD ON tblK.DiscussionID = tblD.DiscussionID '
