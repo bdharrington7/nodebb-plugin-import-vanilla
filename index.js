@@ -56,11 +56,14 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblUser.Photo as _picture, ';
             // + prefix + 'USER_PROFILE.USER_TITLE as _title, '
         if (kudosEnabled) {
-           query += '(SELECT SUM(IF(Action=1, 1, -1)) '
-                 + 'FROM GDN_Kudos AS tblK '
-                 + 'LEFT JOIN GDN_Discussion AS tblD ON tblK.DiscussionID = tblD.DiscussionID '
-                 + 'LEFT JOIN GDN_Comment AS tblC ON tblC.CommentID=tblK.CommentID '
-                 + 'WHERE tblD.InsertUserID=_uid OR tblC.InsertUserID=_uid) AS _reputation, '
+           query += '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
+                    + 'FROM Kudos AS tblK '
+                    + 'INNER JOIN Discussions AS tblD ON tblK.DiscussionID = tblD.DiscussionID '
+                    + 'WHERE tblD.InsertUserID = tblU.UserID) + '
+                    + '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
+                    + 'FROM Kudos AS tblK '
+                    + 'INNER JOIN Comments AS tblC ON tblC.CommentID = tblK.CommentID '
+                    + 'WHERE tblC.InsertUserID = tblU.UserID) AS _reputation, ';
         }
 
         query += 'tblUser.ShowEmail as _showemail, '
@@ -251,6 +254,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblPosts.DiscussionID as _post_replying_to, '
             + 'tblPosts.DiscussionID as _tid, '
             + 'UNIX_TIMESTAMP(tblPosts.DateInserted) as _timestamp, '
+            + 'tblPosts.
             // not being used
             // + 'tblPosts.POST_SUBJECT as _subject, '
 
