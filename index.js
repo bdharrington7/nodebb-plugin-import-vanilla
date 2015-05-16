@@ -56,7 +56,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblUser.Photo as _picture, ';
             // + prefix + 'USER_PROFILE.USER_TITLE as _title, '
         if (kudosEnabled) {
-           Exporter.log('Importing uer reputation from Kudos');
+           Exporter.log('Importing user reputation from Kudos');
            query += '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
                     + 'FROM Kudos AS tblK '
                     + 'INNER JOIN Discussions AS tblD ON tblK.DiscussionID = tblD.DiscussionID '
@@ -73,7 +73,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + '(tblUser.CountDiscussions + tblUser.CountComments) as _postcount, '
             + 'DATE_FORMAT(tblUser.DateOfBirth, "%m/%d/%Y") as _birthday ' // format: mm/dd/yyyy
 
-            + 'FROM ' + prefix + 'User as tblUser, ' //+ prefix + 'USER_PROFILE '
+            + 'FROM ' + prefix + 'User as tblUser ' //+ prefix + 'USER_PROFILE '
             + 'WHERE tblUser.Deleted = 0 '
             // + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
