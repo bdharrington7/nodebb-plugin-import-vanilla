@@ -133,8 +133,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblCategory.Description as _description, '
             + 'UNIX_TIMESTAMP(tblCategory.DateInserted) as _timestamp '
             + 'FROM ' + prefix + 'Category AS tblCategory '
-            + 'WHERE tblCategory.CategoryID > -1 '; // GDN has a root category with id -1 we don't use
-            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '')
+            + 'WHERE tblCategory.CategoryID > -1 ' // GDN has a root category with id -1 we don't use
+            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
 
         // console.log ('Categories query is: ' + query);
