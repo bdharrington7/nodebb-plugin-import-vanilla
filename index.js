@@ -137,8 +137,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '')
 
 
-        console.log ('Categories query is: ' + query);
-
+        // console.log ('Categories query is: ' + query);
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
