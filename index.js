@@ -78,6 +78,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
+        console.log ('Users query is: ' + query);
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -134,6 +135,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'FROM ' + prefix + 'Category AS tblCategory '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit + ' ' : '')
             + 'WHERE tblCategory.CategoryID > -1'; // GDN has a root category with id -1 we don't use
+
+        console.log ('Categories query is: ' + query);
 
 
         if (!Exporter.connection) {
@@ -206,12 +209,14 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
              + 'tblTopics.Body as _content '
 
-            + 'FROM '  + prefix + 'Discussion as tblTopics '// + prefix + ', Comment as tblPosts '
+            + 'FROM ' + prefix + 'Discussion as tblTopics '// + prefix + ', Comment as tblPosts '
             // see
             // + 'WHERE tblTopics.TOPIC_ID = tblPosts.TOPIC_ID '
             // and this one must be a parent
             // + 'AND '  + 'tblPosts.POST_PARENT_ID=0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
+
+        console.log ('Topics query is: ' + query);
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -273,6 +278,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // see https://github.com/akhoury/nodebb-plugin-import#important-note-on-topics-and-posts
             // + 'WHERE POST_PARENT_ID > 0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
+
+        console.log ('Posts query is: ' + query);
 
 
         if (!Exporter.connection) {
