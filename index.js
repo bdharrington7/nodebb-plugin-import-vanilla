@@ -41,20 +41,20 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var kudosEnabled = Exporter.config('kudosEnabled');
         var startms = +new Date();
         var query = 'SELECT '
-            + 'tblUser.UserID as _uid, '
-            + 'tblUser.Name as _username, '
-            // + 'tblUser.USER_DISPLAY_NAME as _alternativeUsername, '
-            + 'tblUser.Email as _registrationEmail, '
-            + 'if (tblUser.Admin = 1, "administrator", "") as _level, '
-            + 'UNIX_TIMESTAMP(tblUser.DateFirstVisit) as _joindate, '
-            + 'tblUser.Banned as _banned, '
-            + 'tblUser.Email as _email, '
-            // + prefix + 'USER_PROFILE.USER_SIGNATURE as _signature, '
-            // + prefix + 'USER_PROFILE.USER_HOMEPAGE as _website, '
-            // + prefix + 'USER_PROFILE.USER_OCCUPATION as _occupation, '
-            // + prefix + 'USER_PROFILE.USER_LOCATION as _location, '
-            + 'tblUser.Photo as _picture, ';
-            // + prefix + 'USER_PROFILE.USER_TITLE as _title, '
+            + 'tblUser.UserID AS _uid, '
+            + 'tblUser.Name AS _username, '
+            // + 'tblUser.USER_DISPLAY_NAME AS _alternativeUsername, '
+            + 'tblUser.Email AS _registrationEmail, '
+            + 'if (tblUser.Admin = 1, "administrator", "") AS _level, '
+            + 'UNIX_TIMESTAMP(tblUser.DateFirstVisit) AS _joindate, '
+            + 'tblUser.Banned AS _banned, '
+            + 'tblUser.Email AS _email, '
+            // + prefix + 'USER_PROFILE.USER_SIGNATURE AS _signature, '
+            // + prefix + 'USER_PROFILE.USER_HOMEPAGE AS _website, '
+            // + prefix + 'USER_PROFILE.USER_OCCUPATION AS _occupation, '
+            // + prefix + 'USER_PROFILE.USER_LOCATION AS _location, '
+            + 'tblUser.Photo AS _picture, ';
+            // + prefix + 'USER_PROFILE.USER_TITLE AS _title, '
         if (kudosEnabled) {
            Exporter.log('Importing user reputation from Kudos');
            query += '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
@@ -67,13 +67,13 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
                     + 'WHERE tblC.InsertUserID = tblU.UserID) AS _reputation, ';
         }
 
-        query += 'tblUser.ShowEmail as _showemail, '
-            + 'UNIX_TIMESTAMP(tblUser.DateLastActive) as _lastposttime, ' // approximate
-            // count both discussions and Comments as posts
-            + '(tblUser.CountDiscussions + tblUser.CountComments) as _postcount, '
-            + 'DATE_FORMAT(tblUser.DateOfBirth, "%m/%d/%Y") as _birthday ' // format: mm/dd/yyyy
+        query += 'tblUser.ShowEmail AS _showemail, '
+            + 'UNIX_TIMESTAMP(tblUser.DateLastActive) AS _lastposttime, ' // approximate
+            // count both discussions and Comments AS posts
+            + '(tblUser.CountDiscussions + tblUser.CountComments) AS _postcount, '
+            + 'DATE_FORMAT(tblUser.DateOfBirth, "%m/%d/%Y") AS _birthday ' // format: mm/dd/yyyy
 
-            + 'FROM ' + prefix + 'User as tblUser ' //+ prefix + 'USER_PROFILE '
+            + 'FROM ' + prefix + 'User AS tblUser ' //+ prefix + 'USER_PROFILE '
             + 'WHERE tblUser.Deleted = 0 '
             // + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
@@ -128,10 +128,10 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var prefix = Exporter.config('prefix');
         var startms = +new Date();
         var query = 'SELECT '
-            + 'tblCategory.CategoryID as _cid, '
-            + 'tblCategory.Name as _name, '
-            + 'tblCategory.Description as _description, '
-            + 'UNIX_TIMESTAMP(tblCategory.DateInserted) as _timestamp '
+            + 'tblCategory.CategoryID AS _cid, '
+            + 'tblCategory.Name AS _name, '
+            + 'tblCategory.Description AS _description, '
+            + 'UNIX_TIMESTAMP(tblCategory.DateInserted) AS _timestamp '
             + 'FROM ' + prefix + 'Category AS tblCategory '
             + 'WHERE tblCategory.CategoryID > -1 ' // GDN has a root category with id -1 we don't use
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
@@ -156,7 +156,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
                 var map = {};
                 rows.forEach(function(row) {
                     row._name = row._name || 'Untitled Category '
-                    row._description = row._description || 'No decsciption available';
+                    row._description = row._description || 'No description available';
                     row._timestamp = ((row._timestamp || 0) * 1000) || startms;
 
                     map[row._cid] = row;
@@ -177,39 +177,39 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var startms = +new Date();
         var query =
             'SELECT '
-             + 'tblTopics.DiscussionID as _tid, '
+             + 'tblTopics.DiscussionID AS _tid, '
 
             // aka category id, or cid
-             + 'tblTopics.CategoryID as _cid, '
+             + 'tblTopics.CategoryID AS _cid, '
 
             // this is the 'parent-post'
             // see https://github.com/akhoury/nodebb-plugin-import#important-note-on-topics-and-posts
             // I don't really need it since I just do a simple join and get its content, but I will include for the reference
             // remember: this post is EXCLUDED in the getPosts() function
-            //  + 'tblTopics.POST_ID as _pid, ' // Don't need this for Vanilla
+            //  + 'tblTopics.POST_ID AS _pid, ' // Don't need this for Vanilla
 
-             + 'tblTopics.InsertUserID as _uid, '
-             + 'tblTopics.CountViews as _viewcount, '
-             + 'tblTopics.Name as _title, '
-             + 'UNIX_TIMESTAMP(tblTopics.DateInserted) as _timestamp, '
+             + 'tblTopics.InsertUserID AS _uid, '
+             + 'tblTopics.CountViews AS _viewcount, '
+             + 'tblTopics.Name AS _title, '
+             + 'UNIX_TIMESTAMP(tblTopics.DateInserted) AS _timestamp, '
 
             // maybe use that to skip
-            //  + 'tblTopics.TOPIC_IS_APPROVED as _approved, '
+            //  + 'tblTopics.TOPIC_IS_APPROVED AS _approved, '
 
             // todo:  figure out what this means,
-            //  + 'tblTopics.TOPIC_STATUS as _status, '  // don't need this
+            //  + 'tblTopics.TOPIC_STATUS AS _status, '  // don't need this
 
-             + 'tblTopics.Announce as _pinned, '
+             + 'tblTopics.Announce AS _pinned, '
 
             // I dont need it, but if it should be 0 per UBB logic, since this post is not replying to anything, it's the parent-post of the topic
-            //  + 'tblPosts.POST_PARENT_ID as _post_replying_to, '
+            //  + 'tblPosts.POST_PARENT_ID AS _post_replying_to, '
 
             // this should be == to the _tid on top of this query
-            //  + 'tblPosts.DiscussionID as _post_tid, '
+            //  + 'tblPosts.DiscussionID AS _post_tid, '
 
-             + 'tblTopics.Body as _content '
+             + 'tblTopics.Body AS _content '
 
-            + 'FROM ' + prefix + 'Discussion as tblTopics '// + prefix + ', Comment as tblPosts '
+            + 'FROM ' + prefix + 'Discussion AS tblTopics '// + prefix + ', Comment AS tblPosts '
             // see
             // + 'WHERE tblTopics.TOPIC_ID = tblPosts.TOPIC_ID '
             // and this one must be a parent
@@ -256,24 +256,24 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var startms = +new Date();
         var query =
             'SELECT '
-            + 'tblPosts.CommentID as _pid, '
-            + 'tblPosts.DiscussionID as _post_replying_to, '
-            + 'tblPosts.DiscussionID as _tid, '
-            + 'UNIX_TIMESTAMP(tblPosts.DateInserted) as _timestamp, '
+            + 'tblPosts.CommentID AS _pid, '
+            + 'tblPosts.DiscussionID AS _post_replying_to, '
+            + 'tblPosts.DiscussionID AS _tid, '
+            + 'UNIX_TIMESTAMP(tblPosts.DateInserted) AS _timestamp, '
             // + 'tblPosts.
             // not being used
-            // + 'tblPosts.POST_SUBJECT as _subject, '
+            // + 'tblPosts.POST_SUBJECT AS _subject, '
 
-            + 'tblPosts.Body as _content, '
-            + 'tblPosts.InsertUserID as _uid, '
+            + 'tblPosts.Body AS _content, '
+            + 'tblPosts.InsertUserID AS _uid, '
 
             // I couldn't tell what's the different, they're all HTML to me
-            + 'tblPosts.Format as _markup, ' // TODO have to convert this one to markup?, val is "html"
+            + 'tblPosts.Format AS _markup ' // TODO have to convert this one to markup?, val is "html"
 
             // maybe use this one to skip
-            // + 'tblPosts.POST_IS_APPROVED as _approved '
+            // + 'tblPosts.POST_IS_APPROVED AS _approved '
 
-            + 'FROM ' + prefix + 'Comment as tblPosts '
+            + 'FROM ' + prefix + 'Comment AS tblPosts '
             // this post cannot be a its topic's main post, it MUST be a reply-post
             // see https://github.com/akhoury/nodebb-plugin-import#important-note-on-topics-and-posts
             // + 'WHERE POST_PARENT_ID > 0 '
