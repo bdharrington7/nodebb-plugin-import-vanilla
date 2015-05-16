@@ -255,7 +255,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblPosts.DiscussionID as _post_replying_to, '
             + 'tblPosts.DiscussionID as _tid, '
             + 'UNIX_TIMESTAMP(tblPosts.DateInserted) as _timestamp, '
-            + 'tblPosts.
+            // + 'tblPosts.
             // not being used
             // + 'tblPosts.POST_SUBJECT as _subject, '
 
