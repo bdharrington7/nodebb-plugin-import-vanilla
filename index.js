@@ -74,7 +74,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
                     + 'INNER JOIN ' + prefix + 'Discussion AS tblD ON tblK.DiscussionID = tblD.DiscussionID '
                     + 'WHERE tblD.InsertUserID = tblUser.UserID) + '
                     + '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
-                    + 'FROM Kudos AS tblK '
+                    + 'FROM ' + prefix + 'Kudos AS tblK '
                     + 'INNER JOIN ' + prefix + 'Comment AS tblC ON tblC.CommentID = tblK.CommentID '
                     + 'WHERE tblC.InsertUserID = tblUser.UserID) AS _reputation, ';
         }
