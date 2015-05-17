@@ -22,7 +22,18 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
         Exporter.config(_config);
         Exporter.config('prefix', config.prefix || config.tablePrefix || 'GDN_');
-        Exporter.config('kudosEnabled', config.kudosEnabled === true);
+
+        if (config.custom && typeof config.custom === 'string') {
+            try {
+                config.custom = JSON.parse(config.custom)
+            } catch (e) {
+                config.custom = null
+            }
+        }
+
+        Exporter.config('custom', config.custom || {
+            'kudosEnabled': false
+        });
 
         Exporter.connection = mysql.createConnection(_config);
         Exporter.connection.connect();
@@ -38,7 +49,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
         var err;
         var prefix = Exporter.config('prefix');
-        var kudosEnabled = Exporter.config('kudosEnabled');
+        var custom = Exporter.config('custom');
+        var kudosEnabled = custom && custom.kudosEnabled;
         var startms = +new Date();
         var query = 'SELECT '
             + 'tblUser.UserID AS _uid, '
