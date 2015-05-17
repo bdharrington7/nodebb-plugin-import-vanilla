@@ -70,13 +70,13 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         if (kudosEnabled) {
            Exporter.log('Importing user reputation from Kudos');
            query += '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
-                    + 'FROM Kudos AS tblK '
-                    + 'INNER JOIN Discussions AS tblD ON tblK.DiscussionID = tblD.DiscussionID '
-                    + 'WHERE tblD.InsertUserID = tblU.UserID) + '
+                    + 'FROM ' + prefix + 'Kudos AS tblK '
+                    + 'INNER JOIN ' + prefix + 'Discussion AS tblD ON tblK.DiscussionID = tblD.DiscussionID '
+                    + 'WHERE tblD.InsertUserID = tblUser.UserID) + '
                     + '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
                     + 'FROM Kudos AS tblK '
-                    + 'INNER JOIN Comments AS tblC ON tblC.CommentID = tblK.CommentID '
-                    + 'WHERE tblC.InsertUserID = tblU.UserID) AS _reputation, ';
+                    + 'INNER JOIN ' + prefix + 'Comment AS tblC ON tblC.CommentID = tblK.CommentID '
+                    + 'WHERE tblC.InsertUserID = tblUser.UserID) AS _reputation, ';
         }
 
         query += 'tblUser.ShowEmail AS _showemail, '
