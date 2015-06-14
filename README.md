@@ -44,21 +44,21 @@ exporter.testrun({
 ```
 
 ### What does it export? //TODO
-read carefully:
+Read carefully:
 
 - ####Users:
     * `_username` YES. UBB for some reason allows duplicate users with same emails? so the first ones by ID orders will be saved, the rest will be skipped. (UBB appends [username]_dup[Number] next to the dups.. so those will be skipped too if the email is already used)
-    * `_alternativeUsername` YES. as the __UBB.User.UserDisplayName__, which [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) will try to use if the username validation fails
-    * `_password` NO. UBB uses MD5, NodeBB uses base64 I think, so can't do, but if you use [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) it will generate random passwords and hand them to you so can email them.
+    * `_alternativeUsername` NO. There's no equivalent in Vanilla
+    * `_password` NO. UBB uses MD5, NodeBB uses base64 I think, so can't do, but if you use [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) it will generate random passwords and hand them to you so you can email them.
     * `_level` (administrator and moderator) YES. Admins will stay Admins, and Moderators will stay Moderators, the catch here though is that each moderator is a moderator on ALL of the categories
-    * `_joindate` YES, UBB uses Seconds, the exported will convert to Milliseconds
-    * `_website` YES. if URL looks valid, it is exported, but it's not checked if 404s
-    * `_picture` YES. if URL looks valid, it is exported, but it's not checked if 404s, if not valid, it's set to "" and NodeBB will generate a gravatar URl for the user
-    * `_reputation` SORT-OF. assumed as the __UBB.User.raking__
-    * `_profileviews` SORT-OF. assumed as the __UBB.User.totalRanks__ I didn't find anything closer
-    * `_location` YES. migrated as is, clear text
-    * `_signature` YES. migrated as is (HTML -- read the [Markdown note](#markdown-note) below)
-    * `_banned` YES. it will stay banned, by username
+    * `_joindate` YES.
+    * `_website` NO. There's no equivalent in Vanilla
+    * `_picture` TODO. if URL looks valid, it is exported, but it's not checked if 404s, if not valid, it's set to "" and NodeBB will generate a gravatar URL for the user
+    * `_reputation` YES, if you had the Kudos plugin installed on Vanilla. You'd have to set the custom option: "kudosEnabled" to true: `{ "kudosEnabled": true }`
+    * `_profileviews` NO. There's no equivalent in Vanilla
+    * `_location` NO. There's no equivalent in Vanilla
+    * `_signature` NO. There's no equivalent in Vanilla
+    * `_banned` NO. I haven't used this feature in Vanilla so I don't know what the data looks like.
     * __Oh and__ UBB have a weird User with ID == 1, ******DONOTDELETE****** <= that's like the first user created, and somehow, in my UBB installation, it does own few topics and posts, this one will not be migrated, BUT [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) will assigned these post to the to the NodeBB initial Admin created.
 
 
@@ -81,6 +81,16 @@ read carefully:
     * `_uid` __(or its UBB user id)__ YES (but if its user is skipped, this post is skipped)
     * `_content` YES (HTML - read the [Markdown Note](#markdown-note) below)
     * `_timestamp` YES, UBB uses Seconds, the exporter will convert to Milliseconds
+
+### Known issues:
+* Not Migrated:
+** Subscriptions / watched topics
+** Chats / messages between users
+** bans
+** attachments
+** permissions
+** roles
+** tags
 
 ### Vanilla Versions tested on:
   - Vanilla 2.1.8p2

@@ -90,7 +90,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        console.log ('Users query is: ' + query);
+        // console.log ('Users query is: ' + query);
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -291,7 +291,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + 'WHERE POST_PARENT_ID > 0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        console.log ('Posts query is: ' + query);
+        // console.log ('Posts query is: ' + query);
 
 
         if (!Exporter.connection) {
