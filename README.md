@@ -20,7 +20,7 @@ it doesn't really need to be, nor that you can use it within NodeBB it self, but
 // you don't have to do this, nodebb-plugin-import will require this plugin and use its api
 // but if you want a run a test
 
-var exporter = require('nodebb-plugin-import-ubb');
+var exporter = require('nodebb-plugin-import-vanilla');
 
 exporter.testrun({
     dbhost: '127.0.0.1',
