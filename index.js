@@ -65,7 +65,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + prefix + 'USER_PROFILE.USER_HOMEPAGE AS _website, '
             // + prefix + 'USER_PROFILE.USER_OCCUPATION AS _occupation, '
             // + prefix + 'USER_PROFILE.USER_LOCATION AS _location, '
-            + 'tblUser.Photo AS _picture, ';
+            + 'CONCAT(\'/uploads/\', tblUser.Photo) AS _picture, ';
             // + prefix + 'USER_PROFILE.USER_TITLE AS _title, '
         if (kudosEnabled) {
            Exporter.log('Importing user reputation from Kudos');
@@ -118,8 +118,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
                     // lower case the email for consistency
                     row._email = (row._email || '').toLowerCase();
 
-                    // I don't know about you about I noticed a lot my users have incomplete urls, urls like: http://
-                    row._picture = Exporter.validateUrl(row._picture);
+                    row._picture = getActualProfilePath(row._picture);
                     row._website = Exporter.validateUrl(row._website);
 
                     map[row._uid] = row;
@@ -129,7 +128,15 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             });
     };
 
-// Categories come from the GDN_Category table
+    // Vanilla does this annoying thing where they change the filename based on the context. This uses
+    // the smallest version (prepended with an 'n', since I found that one to be most consistent.
+    // Resolution might suffer
+    var getActualProfilePath = function(path) {
+        // probably won't work on windows
+        var lastSlash = path.lastIndexOf('/') + 1;
+        return path.substring(0, lastSlash) + 'n' + path.substring(lastSlash);
+    };
+
     Exporter.getCategories = function(callback) {
         return Exporter.getPaginatedCategories(0, -1, callback);
     };
