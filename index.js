@@ -63,21 +63,9 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + prefix + 'USER_PROFILE.USER_HOMEPAGE AS _website, '
             // + prefix + 'USER_PROFILE.USER_OCCUPATION AS _occupation, '
             // + prefix + 'USER_PROFILE.USER_LOCATION AS _location, '
-            + 'tblUser.Photo AS _picture, ';
+            + 'tblUser.Photo AS _picture, '
             // + prefix + 'USER_PROFILE.USER_TITLE AS _title, '
-        // if (kudosEnabled) {
-        //    Exporter.log('Importing user reputation from Kudos');
-        //    query += '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
-        //             + 'FROM ' + prefix + 'Kudos AS tblK '
-        //             + 'INNER JOIN ' + prefix + 'Discussion AS tblD ON tblK.DiscussionID = tblD.DiscussionID '
-        //             + 'WHERE tblD.InsertUserID = tblUser.UserID) + '
-        //             + '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
-        //             + 'FROM ' + prefix + 'Kudos AS tblK '
-        //             + 'INNER JOIN ' + prefix + 'Comment AS tblC ON tblC.CommentID = tblK.CommentID '
-        //             + 'WHERE tblC.InsertUserID = tblUser.UserID) AS _reputation, ';
-        // }
-
-        query += 'tblUser.ShowEmail AS _showemail, '
+            + 'tblUser.ShowEmail AS _showemail, '
             + 'UNIX_TIMESTAMP(tblUser.DateLastActive) AS _lastposttime, ' // approximate
             // count both discussions and Comments AS posts
             + '(tblUser.CountDiscussions + tblUser.CountComments) AS _postcount, '
