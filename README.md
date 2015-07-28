@@ -55,6 +55,8 @@ Read carefully:
     * `_website` NO. There's no equivalent in Vanilla
     * `_picture` YES. You have to move or copy the (entire, not just the contents) `<Vanilla Root>/uploads/userpics` folder to the `NodeBB/public/uploads` folder.
     * `_reputation` YES, if you had the Kudos plugin installed on Vanilla. You'd have to set the custom option: "kudosEnabled" to true: `{ "kudosEnabled": true }`
+    ** Note that `reputation` is a function of `upvotes - downvotes`, so you will get the kudos attached to the posts as upvotes and downvotes
+    ** Also note that there's a setting in NodeBB that prevents users from casting a downvote if they don't have a certain threshold of reputation. Make sure that setting is off or set to 0.
     * `_profileviews` NO. There's no equivalent in Vanilla
     * `_location` NO. There's no equivalent in Vanilla
     * `_signature` NO. There's no equivalent in Vanilla
