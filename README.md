@@ -25,7 +25,7 @@ var exporter = require('nodebb-plugin-import-vanilla');
 exporter.testrun({
     dbhost: '127.0.0.1',
     dbport: 3306,
-    dbname: 'ubb',
+    dbname: 'vanilla',
     dbuser: 'user',
     dbpass: 'password',
 
@@ -43,44 +43,48 @@ exporter.testrun({
 
 ```
 
-### What does it export? //TODO
+### What does it export?
 Read carefully:
 
 - ####Users:
-    * `_username` YES. UBB for some reason allows duplicate users with same emails? so the first ones by ID orders will be saved, the rest will be skipped. (UBB appends [username]_dup[Number] next to the dups.. so those will be skipped too if the email is already used)
+    * `_username` YES.
     * `_alternativeUsername` NO. There's no equivalent in Vanilla
     * `_password` NO. UBB uses MD5, NodeBB uses base64 I think, so can't do, but if you use [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) it will generate random passwords and hand them to you so you can email them.
-    * `_level` (administrator and moderator) YES. Admins will stay Admins, and Moderators will stay Moderators, the catch here though is that each moderator is a moderator on ALL of the categories
+    * `_level` (administrator and moderator) SORT OF. Admins will stay Admins.
     * `_joindate` YES.
     * `_website` NO. There's no equivalent in Vanilla
-    * `_picture` TODO. if URL looks valid, it is exported, but it's not checked if 404s, if not valid, it's set to "" and NodeBB will generate a gravatar URL for the user
+    * `_picture` YES. You have to move or copy the (entire, not just the contents) `<Vanilla Root>/uploads/userpics` folder to the `NodeBB/public/uploads` folder.
     * `_reputation` YES, if you had the Kudos plugin installed on Vanilla. You'd have to set the custom option: "kudosEnabled" to true: `{ "kudosEnabled": true }`
+    ** Note that `reputation` is a function of `upvotes - downvotes`, so you will get the kudos attached to the posts as upvotes and downvotes
+    ** Also note that there's a setting in NodeBB that prevents users from casting a downvote if they don't have a certain threshold of reputation. Make sure that setting is off or set to 0.
     * `_profileviews` NO. There's no equivalent in Vanilla
     * `_location` NO. There's no equivalent in Vanilla
     * `_signature` NO. There's no equivalent in Vanilla
     * `_banned` NO. I haven't used this feature in Vanilla so I don't know what the data looks like.
-    * __Oh and__ UBB have a weird User with ID == 1, ******DONOTDELETE****** <= that's like the first user created, and somehow, in my UBB installation, it does own few topics and posts, this one will not be migrated, BUT [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) will assigned these post to the to the NodeBB initial Admin created.
 
 
-- ####Categories (AKA Forums per UBB Speak):
+- ####Categories:
     * `_name` YES
     * `_description` YES
 
 - ####Topics:
-    * `_cid` __(or its UBB category aka Forum id)__ YES (but if its parent Category is skipped, this topic gets skipped)
-    * `_uid` __(or its UBB user id)__ YES (but if its user is skipped, this topic gets skipped)
+    * `_cid` YES (but if its parent Category is skipped, this topic gets skipped)
+    * `_uid` __(or its Vanilla user id)__ YES (but if its user is skipped, this topic gets skipped)
     * `_title` YES
     * `_content` __(or the 'parent-post` content of this topic)__ YES (HTML - read the [Markdown Note](#markdown-note) below)
-    * `_timestamp` YES, UBB uses Seconds, the exporter will convert to Milliseconds
+    * `_timestamp` YES
     * `_pinned` YES (0 or 1) (I don't know how many you can pin in NodeBB)
     * `_viewcount` YES
 
 - ####Posts:
-    * `_pid` __(or its UBB post id)__
-    * `_tid` __(or its UBB parent topic id)__ YES (but if its parent topic is skipped, this post gets skipped)
-    * `_uid` __(or its UBB user id)__ YES (but if its user is skipped, this post is skipped)
+    * `_pid` __(or its Vanilla post id)__
+    * `_tid` __(or its Vanilla parent topic id)__ YES (but if its parent topic is skipped, this post gets skipped)
+    * `_uid` __(or its Vanilla user id)__ YES (but if its user is skipped, this post is skipped)
     * `_content` YES (HTML - read the [Markdown Note](#markdown-note) below)
-    * `_timestamp` YES, UBB uses Seconds, the exporter will convert to Milliseconds
+    * `_timestamp` YES
+
+- ####Votes:
+    * You can import votes on posts, if you had the Kudos plugin installed on Vanilla. You'd have to set the custom option: "kudosEnabled" to true: `{ "kudosEnabled": true }`
 
 ### Known issues:
 * Not Migrated:
