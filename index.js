@@ -49,8 +49,6 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
         var err;
         var prefix = Exporter.config('prefix');
-        var custom = Exporter.config('custom');
-        var kudosEnabled = custom && custom.kudosEnabled;
         var startms = +new Date();
         var query = 'SELECT '
             + 'tblUser.UserID AS _uid, '
@@ -65,21 +63,9 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + prefix + 'USER_PROFILE.USER_HOMEPAGE AS _website, '
             // + prefix + 'USER_PROFILE.USER_OCCUPATION AS _occupation, '
             // + prefix + 'USER_PROFILE.USER_LOCATION AS _location, '
-            + 'CONCAT(\'/uploads/\', tblUser.Photo) AS _picture, ';
+            + 'CONCAT(\'/uploads/\', tblUser.Photo) AS _picture, '
             // + prefix + 'USER_PROFILE.USER_TITLE AS _title, '
-        if (kudosEnabled) {
-           Exporter.log('Importing user reputation from Kudos');
-           query += '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
-                    + 'FROM ' + prefix + 'Kudos AS tblK '
-                    + 'INNER JOIN ' + prefix + 'Discussion AS tblD ON tblK.DiscussionID = tblD.DiscussionID '
-                    + 'WHERE tblD.InsertUserID = tblUser.UserID) + '
-                    + '(SELECT IFNULL(SUM(IF(Action=1, 1, -1)), 0) '
-                    + 'FROM ' + prefix + 'Kudos AS tblK '
-                    + 'INNER JOIN ' + prefix + 'Comment AS tblC ON tblC.CommentID = tblK.CommentID '
-                    + 'WHERE tblC.InsertUserID = tblUser.UserID) AS _reputation, ';
-        }
-
-        query += 'tblUser.ShowEmail AS _showemail, '
+            + 'tblUser.ShowEmail AS _showemail, '
             + 'UNIX_TIMESTAMP(tblUser.DateLastActive) AS _lastposttime, ' // approximate
             // count both discussions and Comments AS posts
             + '(tblUser.CountDiscussions + tblUser.CountComments) AS _postcount, '
@@ -235,7 +221,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + 'AND '  + 'tblPosts.POST_PARENT_ID=0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        console.log ('Topics query is: ' + query);
+        // console.log ('Topics query is: ' + query);
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -256,7 +242,6 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
                 rows.forEach(function(row) {
                     row._title = row._title ? row._title[0].toUpperCase() + row._title.substr(1) : 'Untitled';
                     row._timestamp = ((row._timestamp || 0) * 1000) || startms;
-
                     map[row._tid] = row;
                 });
 
@@ -320,6 +305,64 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
                     row._content = row._content || '';
                     row._timestamp = ((row._timestamp || 0) * 1000) || startms;
                     map[row._pid] = row;
+                });
+
+                callback(null, map);
+            });
+    };
+
+    Exporter.getVotes = function(callback) {
+        return Exporter.getPaginatedVotes(0, -1, callback);
+    };
+    Exporter.getPaginatedVotes = function(start, limit, callback) {
+        callback = !_.isFunction(callback) ? noop : callback;
+
+        var custom = Exporter.config('custom');
+        var kudosEnabled = custom && custom.kudosEnabled;
+
+        if (!kudosEnabled) {
+            console.log('skipping votes import');
+            callback(null, {});
+            return;
+        }
+
+        var err;
+        var prefix = Exporter.config('prefix');
+        var startms = +new Date();
+        var query =
+            'SELECT '
+            + 'CONCAT(IFNULL(tblVotes.CommentID, "N"), "_", IFNULL(tblVotes.DiscussionID, "N"), "_", tblVotes.UserID) AS _vid, ' // no unique id, so had to make a composite key
+            + 'tblVotes.CommentID AS _pid, '
+            + 'tblVotes.DiscussionID AS _tid, '
+            + 'tblVotes.UserID AS _uid, '
+            + 'tblVotes.Action AS _action '
+            + 'FROM ' + prefix + 'Kudos AS tblVotes '
+            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
+
+        // console.log('Votes query is: ' + query);
+
+        if (!Exporter.connection) {
+            err = {error: 'MySQL connection is not setup. Run setup(config) first'};
+            Exporter.error(err.error);
+            return callback(err);
+        }
+
+        Exporter.connection.query(query,
+            function(err, rows) {
+                if (err) {
+                    Exporter.error(err);
+                    return callback(err);
+                }
+
+                //normalize votes here
+                var map = {};
+                rows.forEach(function(row) {
+                    if (row._pid == 59 || row._tid == 5) {
+                        console.log (row);
+                    }
+                    // row._pid = row._pid || '';
+                    // row._tid = row._tid;
+                    map[row._vid] = row;
                 });
 
                 callback(null, map);

@@ -63,7 +63,7 @@ Read carefully:
     * `_banned` NO. I haven't used this feature in Vanilla so I don't know what the data looks like.
 
 
-- ####Categories (AKA Forums per UBB Speak):
+- ####Categories:
     * `_name` YES
     * `_description` YES
 
