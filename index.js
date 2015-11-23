@@ -321,7 +321,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var kudosEnabled = custom && custom.kudosEnabled;
 
         if (!kudosEnabled) {
-            console.log('skipping votes import');
+            console.log('skipping votes import (enable with {"kudosEnabled":true})');
             callback(null, {});
             return;
         }
@@ -357,12 +357,59 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
                 //normalize votes here
                 var map = {};
                 rows.forEach(function(row) {
-                    if (row._pid == 59 || row._tid == 5) {
-                        console.log (row);
-                    }
-                    // row._pid = row._pid || '';
-                    // row._tid = row._tid;
                     map[row._vid] = row;
+                });
+
+                callback(null, map);
+            });
+    };
+
+    Exporter.getBookmarks = function(callback) {
+        return Exporter.getPaginatedVotes(0, -1, callback);
+    };
+    Exporter.getPaginatedBookmarks = function(start, limit, callback) {
+        callback = !_.isFunction(callback) ? noop : callback;
+
+        var custom = Exporter.config('custom');
+        var importBookmarks = custom && custom.importBookmarks;
+
+        if (!importBookmarks) {
+            console.log('skipping bookmarks import (enable with {"importBookmarks":true}');
+            callback(null, {});
+            return;
+        }
+
+        var err;
+        var prefix = Exporter.config('prefix');
+        var startms = +new Date();
+        var query =
+            'SELECT '
+            + 'CONCAT(tblBookmarks.UserID, "_", tblBookmarks.DiscussionID) AS _bid, ' // no unique id, so had to make a composite key
+            + 'tblBookmarks.DiscussionID AS _tid, '
+            + 'tblBookmarks.UserID AS _uid, '
+            + 'tblBookmarks.CountComments AS _index '
+            + 'FROM ' + prefix + 'UserDiscussion AS tblBookmarks '
+            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
+
+        console.log('Bokmarks query is: ' + query);
+
+        if (!Exporter.connection) {
+            err = {error: 'MySQL connection is not setup. Run setup(config) first'};
+            Exporter.error(err.error);
+            return callback(err);
+        }
+
+        Exporter.connection.query(query,
+            function(err, rows) {
+                if (err) {
+                    Exporter.error(err);
+                    return callback(err);
+                }
+
+                //normalize votes here
+                var map = {};
+                rows.forEach(function(row) {
+                    map[row._bid] = row;
                 });
 
                 callback(null, map);
