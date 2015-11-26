@@ -92,13 +92,13 @@ Read carefully:
 
 ### Known issues:
 * Not Migrated:
-** Subscriptions / watched topics
-** Chats / messages between users
-** bans
-** attachments
-** permissions
-** roles
-** tags
+    * Subscriptions / watched topics
+    * Chats / messages between users
+    * bans
+    * attachments
+    * permissions
+    * roles
+    * tags
 
 ### Vanilla Versions tested on:
   - Vanilla 2.1.8p2
