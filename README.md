@@ -49,14 +49,14 @@ Read carefully:
 - ####Users:
     * `_username` YES.
     * `_alternativeUsername` NO. There's no equivalent in Vanilla
-    * `_password` NO. UBB uses MD5, NodeBB uses base64 I think, so can't do, but if you use [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) it will generate random passwords and hand them to you so you can email them.
+    * `_password` MAYBE. Vanilla uses bcrypt, unless it's been migrated from another platform. NodeBB uses multi-pass bcrypt, so if you know Vanilla was using bcrypt and you set nodebb's encryption rounds to the same number, you might get the same hash. If you use [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) it will generate random passwords and hand them to you so you can email them.
     * `_level` (administrator and moderator) SORT OF. Admins will stay Admins.
     * `_joindate` YES.
     * `_website` NO. There's no equivalent in Vanilla
     * `_picture` YES. You have to move or copy the (entire, not just the contents) `<Vanilla Root>/uploads/userpics` folder to the `NodeBB/public/uploads` folder.
     * `_reputation` YES, if you had the Kudos plugin installed on Vanilla. You'd have to set the custom option: "kudosEnabled" to true: `{ "kudosEnabled": true }`
-    ** Note that `reputation` is a function of `upvotes - downvotes`, so you will get the kudos attached to the posts as upvotes and downvotes
-    ** Also note that there's a setting in NodeBB that prevents users from casting a downvote if they don't have a certain threshold of reputation. Make sure that setting is off or set to 0.
+        * Note that `reputation` is a function of `upvotes - downvotes`, so you will get the kudos attached to the posts as upvotes and downvotes
+        * Also note that there's a setting in NodeBB that prevents users from casting a downvote if they don't have a certain threshold of reputation. Make sure that setting is off or set to 0.
     * `_profileviews` NO. There's no equivalent in Vanilla
     * `_location` NO. There's no equivalent in Vanilla
     * `_signature` NO. There's no equivalent in Vanilla
@@ -85,6 +85,10 @@ Read carefully:
 
 - ####Votes:
     * You can import votes on posts, if you had the Kudos plugin installed on Vanilla. You'd have to set the custom option: "kudosEnabled" to true: `{ "kudosEnabled": true }`
+
+- ####Bookmarks:
+   * The place you left off in a topic is preserved
+   * TODO: the place you left off in a topic indicates if that topic is unread for you or not
 
 ### Known issues:
 * Not Migrated:
