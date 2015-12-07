@@ -335,7 +335,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblVotes.CommentID AS _pid, '
             + 'tblVotes.DiscussionID AS _tid, '
             + 'tblVotes.UserID AS _uid, '
-            + 'tblVotes.Action AS _action '
+            + 'IF(tblVotes.Action = 2, -1, 1) AS _action '
             + 'FROM ' + prefix + 'Kudos AS tblVotes '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 

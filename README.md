@@ -3,6 +3,10 @@ nodebb-plugin-import-vanilla
 
 A Vanilla forum exporter to be required by [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import).
 
+### Changelog
+* 0.1.0: Updating to work with nodebb-plugin-import > 0.3.14 (for NBB version >=0.9.2)
+* 0.0.1: Inital framework
+
 ### What is this?
 
 It's __just__ an exporter of [Vanilla Forums data](http://www.vanillaforums.org/),  that provides an API that [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import)

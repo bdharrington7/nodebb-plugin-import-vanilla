@@ -3,7 +3,7 @@ var fs = require('fs-extra');
 require('./index').testrun({
     dbhost: 'localhost',
     dbport: 3306,
-    dbname: 'ubb_db',
+    dbname: 'vanilla',
     dbuser: 'user',
     dbpass: 'password',
 
