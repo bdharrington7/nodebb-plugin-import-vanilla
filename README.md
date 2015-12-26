@@ -92,6 +92,7 @@ Read carefully:
 
 - ####Bookmarks:
    * The place you left off in a topic is preserved
+   * Enable with `{ "importBookmarks": true }`
    * TODO: the place you left off in a topic indicates if that topic is unread for you or not
 
 ### Known issues:
