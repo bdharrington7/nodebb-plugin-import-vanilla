@@ -321,7 +321,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var kudosEnabled = custom && custom.kudosEnabled;
 
         if (!kudosEnabled) {
-            console.log('skipping votes import (enable with {"kudosEnabled":true})');
+            Exporter.warn('skipping votes import (enable with {"kudosEnabled":true})');
             callback(null, {});
             return;
         }
@@ -374,7 +374,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var importBookmarks = custom && custom.importBookmarks;
 
         if (!importBookmarks) {
-            console.log('skipping bookmarks import (enable with {"importBookmarks":true}');
+            Exporter.warn('skipping bookmarks import (enable with {"importBookmarks": true}');
             callback(null, {});
             return;
         }
@@ -391,7 +391,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'FROM ' + prefix + 'UserDiscussion AS tblBookmarks '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        console.log('Bokmarks query is: ' + query);
+        //console.log('Bokmarks query is: ' + query);
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
