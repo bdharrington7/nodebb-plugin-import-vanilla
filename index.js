@@ -197,6 +197,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
              + 'tblTopics.CountViews AS _viewcount, '
              + 'tblTopics.Name AS _title, '
              + 'UNIX_TIMESTAMP(tblTopics.DateInserted) AS _timestamp, '
+             + 'UNIX_TIMESTAMP(tblTopics.DateUpdated) AS _edited, '
 
             // maybe use that to skip
             //  + 'tblTopics.TOPIC_IS_APPROVED AS _approved, '
@@ -264,6 +265,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblPosts.DiscussionID AS _post_replying_to, '
             + 'tblPosts.DiscussionID AS _tid, '
             + 'UNIX_TIMESTAMP(tblPosts.DateInserted) AS _timestamp, '
+            + 'UNIX_TIMESTAMP(tblPosts.DateUpdated) AS _edited, '
             // + 'tblPosts.
             // not being used
             // + 'tblPosts.POST_SUBJECT AS _subject, '
