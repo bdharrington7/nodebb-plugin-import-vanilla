@@ -69,8 +69,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'UNIX_TIMESTAMP(tblUser.DateLastActive) AS _lastposttime, ' // approximate
             // count both discussions and Comments AS posts
             + '(tblUser.CountDiscussions + tblUser.CountComments) AS _postcount, '
-            + 'DATE_FORMAT(tblUser.DateOfBirth, "%m/%d/%Y") AS _birthday ' // format: mm/dd/yyyy
-
+            + 'DATE_FORMAT(tblUser.DateOfBirth, "%m/%d/%Y") AS _birthday, ' // format: mm/dd/yyyy
+            + 'CONCAT("[", (SELECT GROUP_CONCAT(d.DiscussionID) FROM ' + prefix + 'Discussion d JOIN ' + prefix + 'UserDiscussion ud ON (d.DiscussionID = ud.DiscussionID) WHERE ud.DateLastViewed >= d.dateLastComment AND ud.UserID = tblUser.UserID), "]") as _readTids '
             + 'FROM ' + prefix + 'User AS tblUser ' //+ prefix + 'USER_PROFILE '
             + 'WHERE tblUser.Deleted = 0 '
             // + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID '
