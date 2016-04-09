@@ -171,6 +171,114 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             });
     };
 
+    Exporter.getRooms = function(callback) {
+        return Exporter.getPaginatedRooms(0, -1, callback);
+    };
+    Exporter.getPaginatedRooms = function(start, limit, callback) {
+        callback = !_.isFunction(callback) ? noop : callback;
+
+        var err;
+        var prefix = Exporter.config('prefix');
+        var startms = +new Date();
+        var query =
+            'SELECT '
+            + 'tblRooms.ConversationID AS _roomId, '
+
+            + 'tblRooms.InsertUserID AS _uid, '
+            + 'tblRooms.Contributors AS _uids, '
+            + 'UNIX_TIMESTAMP(tblRooms.DateInserted) AS _timestamp '
+
+            + 'FROM ' + prefix + 'Conversation AS tblRooms '// + prefix + ', Comment AS tblPosts '
+
+            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
+
+        // console.log ('Topics query is: ' + query);
+
+        if (!Exporter.connection) {
+            err = {error: 'MySQL connection is not setup. Run setup(config) first'};
+            Exporter.error(err.error);
+            return callback(err);
+        }
+
+        Exporter.connection.query(query,
+            function(err, rows) {
+                if (err) {
+                    Exporter.error(err);
+                    return callback(err);
+                }
+
+                //normalize here
+                var map = {};
+
+                rows.forEach(function(row) {
+                    // this is a really terrible hack and I'm not sure it will work for all communities
+                    // the Contributors column is formatted as such: 'a:3:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:2:"10";}'
+                    // so, contributors are denoted as 's:<some var>:"<contributor uid>"' and this is how to extract it:
+                    row._uids = row._uids.split(';')
+                        .filter(function(s){return s[0] === 's';})  // only return elements starting with 's'
+                        .map(function(s){                           // then split by ':', getting the third element
+                            return parseInt(s.split(':')[2].replace('"','')); // which is a string containing quotes, and parse to int.
+                        });
+                    row._roomName = 'Chat #' + row._roomId;
+                    row._timestamp = ((row._timestamp || 0) * 1000) || startms;
+                    map[row._roomId] = row;
+                });
+
+                callback(null, map);
+            });
+    };
+
+    Exporter.getMessages = function(callback) {
+        return Exporter.getPaginatedMessages(0, -1, callback);
+    };
+    Exporter.getPaginatedMessages = function(start, limit, callback) {
+        callback = !_.isFunction(callback) ? noop : callback;
+
+        var err;
+        var prefix = Exporter.config('prefix');
+        var startms = +new Date();
+        var query =
+            'SELECT '
+            + 'tblMessages.MessageID AS _mid, '
+
+            + 'tblMessages.ConversationID AS _roomId, '
+
+            + 'tblMessages.InsertUserID AS _fromuid, '
+            + 'tblMessages.Body AS _content, '
+            + 'UNIX_TIMESTAMP(tblMessages.DateInserted) AS _timestamp '
+
+            + 'FROM ' + prefix + 'ConversationMessage AS tblMessages '// + prefix + ', Comment AS tblPosts '
+
+            + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
+
+        // console.log ('Topics query is: ' + query);
+
+        if (!Exporter.connection) {
+            err = {error: 'MySQL connection is not setup. Run setup(config) first'};
+            Exporter.error(err.error);
+            return callback(err);
+        }
+
+        Exporter.connection.query(query,
+            function(err, rows) {
+                if (err) {
+                    Exporter.error(err);
+                    return callback(err);
+                }
+
+                //normalize here
+                var map = {};
+
+                rows.forEach(function(row) {
+                    row._title = row._title ? row._title[0].toUpperCase() + row._title.substr(1) : 'Untitled';
+                    row._timestamp = ((row._timestamp || 0) * 1000) || startms;
+                    map[row._mid] = row;
+                });
+
+                callback(null, map);
+            });
+    };
+
     Exporter.getTopics = function(callback) {
         return Exporter.getPaginatedTopics(0, -1, callback);
     };
