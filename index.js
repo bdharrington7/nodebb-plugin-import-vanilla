@@ -219,7 +219,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
                         .map(function(s){                           // then split by ':', getting the third element
                             return parseInt(s.split(':')[2].replace('"','')); // which is a string containing quotes, and parse to int.
                         });
-                    row._roomName = 'Chat #' + row._roomId;
+                    row._roomName = 'Chat Room ' + row._roomId;
                     row._timestamp = ((row._timestamp || 0) * 1000) || startms;
                     map[row._roomId] = row;
                 });
