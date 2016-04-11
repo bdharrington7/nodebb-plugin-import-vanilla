@@ -251,7 +251,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        // console.log ('Topics query is: ' + query);
+        // console.log ('Messages query is: ' + query);
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -313,6 +313,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             //  + 'tblTopics.TOPIC_STATUS AS _status, '  // don't need this
 
              + 'tblTopics.Announce AS _pinned, '
+             + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblTopics.DiscussionID AND media.Type LIKE "image%" AND media.ForeignTable = "discussion") AS _images, '
+             + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblTopics.DiscussionID AND media.Type NOT LIKE "image%" AND media.ForeignTable = "discussion") AS _attachments, '
 
             // I dont need it, but if it should be 0 per UBB logic, since this post is not replying to anything, it's the parent-post of the topic
             //  + 'tblPosts.POST_PARENT_ID AS _post_replying_to, '
@@ -349,6 +351,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
                 rows.forEach(function(row) {
                     row._title = row._title ? row._title[0].toUpperCase() + row._title.substr(1) : 'Untitled';
+                    row._images = row._images ? row._images.split(',') : [];
+                    row._attachments = row._attachments ? row._attachments.split(',') : [];
                     row._timestamp = ((row._timestamp || 0) * 1000) || startms;
                     map[row._tid] = row;
                 });
@@ -378,6 +382,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
             + 'tblPosts.Body AS _content, '
             + 'tblPosts.InsertUserID AS _uid, '
+            + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblPosts.CommentID AND media.Type LIKE "image%" AND media.ForeignTable = "comment") AS _images, '
+            + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblPosts.CommentID AND media.Type NOT LIKE "image%" AND media.ForeignTable = "comment") AS _attachments, '
 
             // I couldn't tell what's the different, they're all HTML to me
             + 'tblPosts.Format AS _markup ' // TODO have to convert this one to markup?, val is "html"
@@ -411,6 +417,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
                 var map = {};
                 rows.forEach(function(row) {
                     row._content = row._content || '';
+                    row._images = row._images ? row._images.split(',') : [];
+                    row._attachments = row._attachments ? row._attachments.split(',') : [];
                     row._timestamp = ((row._timestamp || 0) * 1000) || startms;
                     map[row._pid] = row;
                 });
@@ -499,7 +507,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'FROM ' + prefix + 'UserDiscussion AS tblBookmarks '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        console.log('Bokmarks query is: ' + query);
+        // console.log('Bokmarks query is: ' + query);
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
