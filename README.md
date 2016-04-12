@@ -4,7 +4,7 @@ nodebb-plugin-import-vanilla
 A Vanilla forum exporter to be required by [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import).
 
 ### Changelog
-* 0.1.0: Updating to work with nodebb-plugin-import > 0.3.14 (for NBB version >=0.9.2)
+* 0.2.0: Updating to work with nodebb-plugin-import > 0.3.41 (for NBB version == 1.0.0)
 * 0.0.1: Inital framework
 
 ### What is this?
@@ -58,7 +58,7 @@ Read carefully:
     * `_joindate` YES.
     * `_website` NO. There's no equivalent in Vanilla
     * `_picture` YES. You have to move or copy the (entire, not just the contents) `<Vanilla Root>/uploads/userpics` folder to the `NodeBB/public/uploads` folder.
-    * `_reputation` YES, if you had the Kudos plugin installed on Vanilla. You'd have to set the custom option: "kudosEnabled" to true: `{ "kudosEnabled": true }`
+    * `_reputation` YES, if you had the Kudos plugin installed on Vanilla. You'd have to set the custom option: "importKudos" to true: `{ "importKudos": true }`
         * Note that `reputation` is a function of `upvotes - downvotes`, so you will get the kudos attached to the posts as upvotes and downvotes
         * Also note that there's a setting in NodeBB that prevents users from casting a downvote if they don't have a certain threshold of reputation. Make sure that setting is off or set to 0.
     * `_profileviews` NO. There's no equivalent in Vanilla
@@ -88,18 +88,17 @@ Read carefully:
     * `_timestamp` YES
 
 - ####Votes:
-    * You can import votes on posts, if you had the Kudos plugin installed on Vanilla. You'd have to set the custom option: "kudosEnabled" to true: `{ "kudosEnabled": true }`
+    * You can import votes on posts, if you had the Kudos plugin installed on Vanilla. 
+    * Enable with `{ "importKudos": true }`
 
 - ####Bookmarks:
    * The place you left off in a topic is preserved
-   * TODO: the place you left off in a topic indicates if that topic is unread for you or not
+   * Enable with `{ "importBookmarks": true }`
 
 ### Known issues:
 * Not Migrated:
     * Subscriptions / watched topics
-    * Chats / messages between users
     * bans
-    * attachments
     * permissions
     * roles
     * tags

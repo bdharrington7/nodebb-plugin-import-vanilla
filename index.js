@@ -69,8 +69,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'UNIX_TIMESTAMP(tblUser.DateLastActive) AS _lastposttime, ' // approximate
             // count both discussions and Comments AS posts
             + '(tblUser.CountDiscussions + tblUser.CountComments) AS _postcount, '
-            + 'DATE_FORMAT(tblUser.DateOfBirth, "%m/%d/%Y") AS _birthday ' // format: mm/dd/yyyy
-
+            + 'DATE_FORMAT(tblUser.DateOfBirth, "%m/%d/%Y") AS _birthday, ' // format: mm/dd/yyyy
+            + 'CONCAT("[", (SELECT GROUP_CONCAT(d.DiscussionID) FROM ' + prefix + 'Discussion d JOIN ' + prefix + 'UserDiscussion ud ON (d.DiscussionID = ud.DiscussionID) WHERE ud.DateLastViewed >= d.dateLastComment AND ud.UserID = tblUser.UserID), "]") as _readTids '
             + 'FROM ' + prefix + 'User AS tblUser ' //+ prefix + 'USER_PROFILE '
             + 'WHERE tblUser.Deleted = 0 '
             // + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID '
@@ -305,6 +305,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
              + 'tblTopics.CountViews AS _viewcount, '
              + 'tblTopics.Name AS _title, '
              + 'UNIX_TIMESTAMP(tblTopics.DateInserted) AS _timestamp, '
+             + 'UNIX_TIMESTAMP(tblTopics.DateUpdated) AS _edited, '
 
             // maybe use that to skip
             //  + 'tblTopics.TOPIC_IS_APPROVED AS _approved, '
@@ -376,6 +377,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblPosts.DiscussionID AS _post_replying_to, '
             + 'tblPosts.DiscussionID AS _tid, '
             + 'UNIX_TIMESTAMP(tblPosts.DateInserted) AS _timestamp, '
+            + 'UNIX_TIMESTAMP(tblPosts.DateUpdated) AS _edited, '
             // + 'tblPosts.
             // not being used
             // + 'tblPosts.POST_SUBJECT AS _subject, '
@@ -490,7 +492,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
         var importBookmarks = custom && custom.importBookmarks;
 
         if (!importBookmarks) {
-            Exporter.warn('skipping bookmarks import (enable with {"importBookmarks":true}');
+            Exporter.warn('skipping bookmarks import (enable with {"importBookmarks": true}');
             callback(null, {});
             return;
         }
@@ -507,7 +509,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'FROM ' + prefix + 'UserDiscussion AS tblBookmarks '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        // console.log('Bokmarks query is: ' + query);
+        // console.log('Bookmarks query is: ' + query);
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
