@@ -67,10 +67,10 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + prefix + 'USER_PROFILE.USER_TITLE AS _title, '
             + 'tblUser.ShowEmail AS _showemail, '
             + 'UNIX_TIMESTAMP(tblUser.DateLastActive) AS _lastposttime, ' // approximate
+            + '(SELECT GROUP_CONCAT(d.DiscussionID) FROM ' + prefix + 'Discussion d JOIN ' + prefix + 'UserDiscussion ud ON (d.DiscussionID = ud.DiscussionID) WHERE ud.DateLastViewed >= d.dateLastComment AND ud.UserID = tblUser.UserID) as _readTids, '
             // count both discussions and Comments AS posts
             + '(tblUser.CountDiscussions + tblUser.CountComments) AS _postcount, '
-            + 'DATE_FORMAT(tblUser.DateOfBirth, "%m/%d/%Y") AS _birthday, ' // format: mm/dd/yyyy
-            + 'CONCAT("[", (SELECT GROUP_CONCAT(d.DiscussionID) FROM ' + prefix + 'Discussion d JOIN ' + prefix + 'UserDiscussion ud ON (d.DiscussionID = ud.DiscussionID) WHERE ud.DateLastViewed >= d.dateLastComment AND ud.UserID = tblUser.UserID), "]") as _readTids '
+            + 'DATE_FORMAT(tblUser.DateOfBirth, "%m/%d/%Y") AS _birthday ' // format: mm/dd/yyyy
             + 'FROM ' + prefix + 'User AS tblUser ' //+ prefix + 'USER_PROFILE '
             + 'WHERE tblUser.Deleted = 0 '
             // + 'WHERE ' + prefix + 'USERS.USER_ID = ' + prefix + 'USER_PROFILE.USER_ID '
@@ -106,6 +106,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
                     row._picture = getActualProfilePath(row._picture);
                     row._website = Exporter.validateUrl(row._website);
+                    row._readTids = row._readTids ? row._readTids.split(',').map(function(tidStr){ return parseInt(tidStr); }) : [];
 
                     map[row._uid] = row;
                 });
