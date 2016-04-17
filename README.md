@@ -14,7 +14,7 @@ can use to exporter source forum data and import it to NodeBB's database. So, it
 
 ### Why is it even a NodeBB plugin?
 
-it doesn't really need to be, nor that you can use it within NodeBB it self, but, having this as a plugin have few benefits:
+It doesn't really need to be, nor that you can use it within NodeBB itself, but, having this as a plugin have few benefits:
 * a nodebb- namespace, since you can't really use it for anything else
 * it can easily `require` NodeBB useful tools, currently
 
@@ -57,7 +57,7 @@ Read carefully:
     * `_level` (administrator and moderator) SORT OF. Admins will stay Admins.
     * `_joindate` YES.
     * `_website` NO. There's no equivalent in Vanilla
-    * `_picture` YES. You have to move or copy the (entire, not just the contents) `<Vanilla Root>/uploads/userpics` folder to the `NodeBB/public/uploads` folder.
+    * `_picture` YES. You have to move or copy the (entire, not just the contents) `<Vanilla Root>/uploads/userpics` folder into the `NodeBB/public/uploads` folder.
     * `_reputation` YES, if you had the Kudos plugin installed on Vanilla. You'd have to set the custom option: "importKudos" to true: `{ "importKudos": true }`
         * Note that `reputation` is a function of `upvotes - downvotes`, so you will get the kudos attached to the posts as upvotes and downvotes
         * Also note that there's a setting in NodeBB that prevents users from casting a downvote if they don't have a certain threshold of reputation. Make sure that setting is off or set to 0.
@@ -92,8 +92,12 @@ Read carefully:
     * Enable with `{ "importKudos": true }`
 
 - ####Bookmarks:
-   * The place you left off in a topic is preserved
+   * The place each user left off in a topic is preserved
    * Enable with `{ "importBookmarks": true }`
+
+- ####Attachments:
+   * Move or copy the whole `<Vanilla Root>/uploads/FileUpload` folder into the `NodeBB/public/uploads` folder.
+   * Grabs records from the GDN_Media table to get the file paths of your attachments on the file system
 
 ### Known issues:
 * Not Migrated:
@@ -112,4 +116,4 @@ read [nodebb-plugin-import#markdown-note](https://github.com/akhoury/nodebb-plug
 
 ### It's an exporter, why does it have 'import' in its title
 
-To keep the namespacing accurate, this __exporter__ is designed to export data for [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) only, also for a 1 time use, so why do you care.
+To keep the namespacing accurate, this __exporter__ is designed to export data for [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import) only, also for a 1 time use.

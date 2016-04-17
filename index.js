@@ -394,13 +394,13 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // maybe use this one to skip
             // + 'tblPosts.POST_IS_APPROVED AS _approved '
 
-            + 'FROM ' + prefix + 'Comment AS tblPosts '
+            + 'FROM ' + prefix + 'Comment AS tblPosts ORDER BY DateInserted '
             // this post cannot be a its topic's main post, it MUST be a reply-post
             // see https://github.com/akhoury/nodebb-plugin-import#important-note-on-topics-and-posts
             // + 'WHERE POST_PARENT_ID > 0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        // console.log ('Posts query is: ' + query);
+        // Exporter.log ('Posts query is: ' + query);
 
 
         if (!Exporter.connection) {
