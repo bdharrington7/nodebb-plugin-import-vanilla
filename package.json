@@ -1,6 +1,6 @@
 {
     "name": "nodebb-plugin-import-vanilla",
-    "version": "0.2.0",
+    "version": "1.0.0",
     "description": "a Vanilla forum exporter for use with nodebb-plugin-import. Do not activate.",
     "main": "./index.js",
     "scripts": {
