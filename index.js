@@ -288,6 +288,10 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
         var err;
         var prefix = Exporter.config('prefix');
+
+        var custom = Exporter.config('custom');
+        var importAttachments = custom && custom.importAttachments;
+
         var startms = +new Date();
         var query =
             'SELECT '
@@ -314,9 +318,11 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // todo:  figure out what this means,
             //  + 'tblTopics.TOPIC_STATUS AS _status, '  // don't need this
 
-             + 'tblTopics.Announce AS _pinned, '
-             + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblTopics.DiscussionID AND media.Type LIKE "image%" AND media.ForeignTable = "discussion") AS _images, '
-             + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblTopics.DiscussionID AND media.Type NOT LIKE "image%" AND media.ForeignTable = "discussion") AS _attachments, '
+             + 'tblTopics.Announce AS _pinned, ';
+             if (importAttachments) {
+                query += '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblTopics.DiscussionID AND media.Type LIKE "image%" AND media.ForeignTable = "discussion") AS _images, '
+                 + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblTopics.DiscussionID AND media.Type NOT LIKE "image%" AND media.ForeignTable = "discussion") AS _attachments, '
+             }
 
             // I dont need it, but if it should be 0 per UBB logic, since this post is not replying to anything, it's the parent-post of the topic
             //  + 'tblPosts.POST_PARENT_ID AS _post_replying_to, '
@@ -324,16 +330,16 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // this should be == to the _tid on top of this query
             //  + 'tblPosts.DiscussionID AS _post_tid, '
 
-             + 'tblTopics.Body AS _content '
+            query += 'tblTopics.Body AS _content '
 
-            + 'FROM ' + prefix + 'Discussion AS tblTopics '// + prefix + ', Comment AS tblPosts '
+            + 'FROM ' + prefix + 'Discussion AS tblTopics '
             // see
             // + 'WHERE tblTopics.TOPIC_ID = tblPosts.TOPIC_ID '
             // and this one must be a parent
             // + 'AND '  + 'tblPosts.POST_PARENT_ID=0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        // console.log ('Topics query is: ' + query);
+        Exporter.log ('Topics query is: ' + query);
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -371,6 +377,10 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
         var err;
         var prefix = Exporter.config('prefix');
+
+        var custom = Exporter.config('custom');
+        var importAttachments = custom && custom.importAttachments;
+
         var startms = +new Date();
         var query =
             'SELECT '
@@ -384,12 +394,14 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + 'tblPosts.POST_SUBJECT AS _subject, '
 
             + 'tblPosts.Body AS _content, '
-            + 'tblPosts.InsertUserID AS _uid, '
-            + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblPosts.CommentID AND media.Type LIKE "image%" AND media.ForeignTable = "comment") AS _images, '
-            + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblPosts.CommentID AND media.Type NOT LIKE "image%" AND media.ForeignTable = "comment") AS _attachments, '
+            + 'tblPosts.InsertUserID AS _uid, ';
+            if (importAttachments) {
+                query += '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from ' + prefix + 'Media AS media WHERE media.ForeignID = tblPosts.CommentID AND media.Type LIKE "image%" AND media.ForeignTable = "comment") AS _images, '
+                + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from ' + prefix + 'Media AS media WHERE media.ForeignID = tblPosts.CommentID AND media.Type NOT LIKE "image%" AND media.ForeignTable = "comment") AS _attachments, '
+            }
 
             // I couldn't tell what's the different, they're all HTML to me
-            + 'tblPosts.Format AS _markup ' // TODO have to convert this one to markup?, val is "html"
+            query += 'tblPosts.Format AS _markup ' // TODO have to convert this one to markup?, val is "html"
 
             // maybe use this one to skip
             // + 'tblPosts.POST_IS_APPROVED AS _approved '
@@ -400,7 +412,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + 'WHERE POST_PARENT_ID > 0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        // Exporter.log ('Posts query is: ' + query);
+        Exporter.log ('Posts query is: ' + query);
 
 
         if (!Exporter.connection) {
