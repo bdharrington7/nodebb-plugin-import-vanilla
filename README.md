@@ -100,6 +100,9 @@ Read carefully:
    * Assumes you have the [Media Attachments]() plugin installed for uploads
    * Grabs records from the GDN_Media table to get the file paths of your attachments on the file system
 
+- ####Messages:
+  * imported as Chats in NodeBB
+
 ### Known issues:
 * Not Migrated:
     * Subscriptions / watched topics
