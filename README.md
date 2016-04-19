@@ -97,7 +97,7 @@ Read carefully:
 
 - ####Attachments:
    * Move or copy the whole `<Vanilla Root>/uploads/FileUpload` folder into the `NodeBB/public/uploads` folder.
-   * Assumes you have the [Media Attachments]() plugin installed for uploads
+   * Assumes you have the [File Upload](https://vanillaforums.org/addon/fileupload-plugin) plugin installed for uploads
    * Grabs records from the GDN_Media table to get the file paths of your attachments on the file system
 
 - ####Messages:
@@ -116,15 +116,16 @@ Read carefully:
 
 ### Custom plugins note:
 ##### This importer enables importing data from custom vanilla plugins:
-  * [kudos]()
+  * [kudos](https://vanillaforums.org/addon/kudos-plugin)
     * Import these with the option `{ "importKudos": true }`
-  * [Media upload]()
+  * [File Upload](https://vanillaforums.org/addon/fileupload-plugin)
     * Migrate these into embedded images (for image files), and links (for all other files) with this custom attibute: `{ "importAttachments": true}`
     * With this plugin, users can have the Canonical link inserted into the post after upload, which breaks things if you are migrating to a new domain name. You can use this javascript snippet in the pre-process section of the Post-import tools utility to remove those duplicated, or broken links:
     ```
     content = content.replace(/<.*?your\.domain\.com.*?\/>/g, '')
     ```
-  * [Spoilers]()
+  * [Spoilers](https://vanillaforums.org/addon/spoilers-plugin)
+    * You will need to do a post-convert step using the bbcode-to-markdown option, since this plugin inserts bbcode tags to denote spoilers
 ##### Other custom transformations
   * Quoting
     * Quotes in vanilla use the tag `<blockquote rel="author">` to denote quoted text and the original author. Since "rel" isn't a standard attribute in HTML, the library being used to convert HTML to markdown won't recognize the author properly. As a workaround, you can use this javascript to transform the Vanilla quote blocks to BBCode style tags, with the proper attribute that can be converted back to HTML, and then to markdown:

@@ -339,7 +339,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + 'AND '  + 'tblPosts.POST_PARENT_ID=0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        Exporter.log ('Topics query is: ' + query);
+        // Exporter.log ('Topics query is: ' + query);
 
         if (!Exporter.connection) {
             err = {error: 'MySQL connection is not setup. Run setup(config) first'};
@@ -412,7 +412,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + 'WHERE POST_PARENT_ID > 0 '
             + (start >= 0 && limit >= 0 ? 'LIMIT ' + start + ',' + limit : '');
 
-        Exporter.log ('Posts query is: ' + query);
+        // Exporter.log ('Posts query is: ' + query);
 
 
         if (!Exporter.connection) {
