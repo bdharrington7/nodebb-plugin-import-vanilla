@@ -4,6 +4,8 @@ nodebb-plugin-import-vanilla
 A Vanilla forum exporter to be required by [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import).
 
 ### Changelog
+* 1.0.2: Changes the location of where to move attachments and profile pics, to utilize the privacy features of NBB.
+* 1.0.1: Adds attachments, and some other stuff, released to npm
 * 0.2.0: Updating to work with nodebb-plugin-import > 0.3.41 (for NBB version == 1.0.0)
 * 0.0.1: Inital framework
 
@@ -57,7 +59,7 @@ Read carefully:
     * `_level` (administrator and moderator) SORT OF. Admins will stay Admins.
     * `_joindate` YES.
     * `_website` NO. There's no equivalent in Vanilla
-    * `_picture` YES. You have to move or copy the (entire, not just the contents) `<Vanilla Root>/uploads/userpics` folder into the `NodeBB/public/uploads` folder.
+    * `_picture` YES. You have to move or copy the (entire, not just the contents) `<Vanilla Root>/uploads/userpics` folder into the `NodeBB/public/uploads/profile/` folder.
     * `_reputation` YES, if you had the Kudos plugin installed on Vanilla. You'd have to set the custom option: "importKudos" to true: `{ "importKudos": true }`
         * Note that `reputation` is a function of `upvotes - downvotes`, so you will get the kudos attached to the posts as upvotes and downvotes
         * Also note that there's a setting in NodeBB that prevents users from casting a downvote if they don't have a certain threshold of reputation. Make sure that setting is off or set to 0.
@@ -96,7 +98,7 @@ Read carefully:
    * Enable with `{ "importBookmarks": true }`
 
 - ####Attachments:
-   * Move or copy the whole `<Vanilla Root>/uploads/FileUpload` folder into the `NodeBB/public/uploads` folder.
+   * Move or copy the whole `<Vanilla Root>/uploads/FileUpload` folder into the `NodeBB/public/uploads/files/` folder.
    * Assumes you have the [File Upload](https://vanillaforums.org/addon/fileupload-plugin) plugin installed for uploads
    * Grabs records from the GDN_Media table to get the file paths of your attachments on the file system
 

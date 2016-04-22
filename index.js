@@ -63,7 +63,7 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             // + prefix + 'USER_PROFILE.USER_HOMEPAGE AS _website, '
             // + prefix + 'USER_PROFILE.USER_OCCUPATION AS _occupation, '
             // + prefix + 'USER_PROFILE.USER_LOCATION AS _location, '
-            + 'CONCAT(\'/uploads/\', tblUser.Photo) AS _picture, '
+            + 'CONCAT(\'/uploads/profile/\', tblUser.Photo) AS _picture, '
             // + prefix + 'USER_PROFILE.USER_TITLE AS _title, '
             + 'tblUser.ShowEmail AS _showemail, '
             + 'UNIX_TIMESTAMP(tblUser.DateLastActive) AS _lastposttime, ' // approximate
@@ -320,8 +320,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
 
              + 'tblTopics.Announce AS _pinned, ';
              if (importAttachments) {
-                query += '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblTopics.DiscussionID AND media.Type LIKE "image%" AND media.ForeignTable = "discussion") AS _images, '
-                 + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblTopics.DiscussionID AND media.Type NOT LIKE "image%" AND media.ForeignTable = "discussion") AS _attachments, '
+                query += '(SELECT GROUP_CONCAT(CONCAT("/uploads/files", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblTopics.DiscussionID AND media.Type LIKE "image%" AND media.ForeignTable = "discussion") AS _images, '
+                 + '(SELECT GROUP_CONCAT(CONCAT("/uploads/files", media.Path)) from GDN_Media AS media WHERE media.ForeignID = tblTopics.DiscussionID AND media.Type NOT LIKE "image%" AND media.ForeignTable = "discussion") AS _attachments, '
              }
 
             // I dont need it, but if it should be 0 per UBB logic, since this post is not replying to anything, it's the parent-post of the topic
@@ -396,8 +396,8 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
             + 'tblPosts.Body AS _content, '
             + 'tblPosts.InsertUserID AS _uid, ';
             if (importAttachments) {
-                query += '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from ' + prefix + 'Media AS media WHERE media.ForeignID = tblPosts.CommentID AND media.Type LIKE "image%" AND media.ForeignTable = "comment") AS _images, '
-                + '(SELECT GROUP_CONCAT(CONCAT("/uploads", media.Path)) from ' + prefix + 'Media AS media WHERE media.ForeignID = tblPosts.CommentID AND media.Type NOT LIKE "image%" AND media.ForeignTable = "comment") AS _attachments, '
+                query += '(SELECT GROUP_CONCAT(CONCAT("/uploads/files", media.Path)) from ' + prefix + 'Media AS media WHERE media.ForeignID = tblPosts.CommentID AND media.Type LIKE "image%" AND media.ForeignTable = "comment") AS _images, '
+                + '(SELECT GROUP_CONCAT(CONCAT("/uploads/files", media.Path)) from ' + prefix + 'Media AS media WHERE media.ForeignID = tblPosts.CommentID AND media.Type NOT LIKE "image%" AND media.ForeignTable = "comment") AS _attachments, '
             }
 
             // I couldn't tell what's the different, they're all HTML to me
