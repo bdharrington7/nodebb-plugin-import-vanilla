@@ -1,6 +1,7 @@
 nodebb-plugin-import-vanilla
 ========================
-[![npm](https://img.shields.io/npm/dt/express.svg?maxAge=2592000)]() [![npm](https://img.shields.io/npm/v/npm.svg?maxAge=2592000)]()
+[![npm](https://img.shields.io/npm/dt/nodebb-plugin-import-vanilla.svg?maxAge=2592000)](https://www.npmjs.com/package/nodebb-plugin-import-vanilla) 
+[![npm](https://img.shields.io/npm/v/nodebb-plugin-import-vanilla.svg?maxAge=2592000)](https://www.npmjs.com/package/nodebb-plugin-import-vanilla)
 
 A Vanilla forum exporter to be required by [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import).
 
