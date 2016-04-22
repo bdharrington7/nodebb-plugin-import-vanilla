@@ -1,5 +1,6 @@
 nodebb-plugin-import-vanilla
 ========================
+[![npm](https://img.shields.io/npm/dt/express.svg?maxAge=2592000)]() [![npm](https://img.shields.io/npm/v/npm.svg?maxAge=2592000)]()
 
 A Vanilla forum exporter to be required by [nodebb-plugin-import](https://github.com/akhoury/nodebb-plugin-import).
 
@@ -128,6 +129,7 @@ Read carefully:
     ```
   * [Spoilers](https://vanillaforums.org/addon/spoilers-plugin)
     * You will need to do a post-convert step using the bbcode-to-markdown option, since this plugin inserts bbcode tags to denote spoilers
+
 ##### Other custom transformations
   * Quoting
     * Quotes in vanilla use the tag `<blockquote rel="author">` to denote quoted text and the original author. Since "rel" isn't a standard attribute in HTML, the library being used to convert HTML to markdown won't recognize the author properly. As a workaround, you can use this javascript to transform the Vanilla quote blocks to BBCode style tags, with the proper attribute that can be converted back to HTML, and then to markdown:
