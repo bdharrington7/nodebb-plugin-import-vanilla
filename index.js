@@ -119,6 +119,9 @@ var logPrefix = '[nodebb-plugin-import-vanilla]';
     // the smallest version (prepended with an 'n', since I found that one to be most consistent.
     // Resolution might suffer
     var getActualProfilePath = function(path) {
+        // return empty string if e.g. GDN_User.Photo is NULL
+        if (!path)
+            return "";
         // probably won't work on windows
         var lastSlash = path.lastIndexOf('/') + 1;
         return path.substring(0, lastSlash) + 'n' + path.substring(lastSlash);
